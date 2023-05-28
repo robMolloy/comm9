@@ -56,7 +56,7 @@ import {
   useCurrentPocketBaseUser,
 } from 'src/modules/useVuePocketbaseAuth';
 import { pocketBaseUsersModelSchema } from 'src/modules/useVuePocketbaseAuth/schemas/pocketBaseUserModelSchemas';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 import { z } from 'zod';
 
 const currentUser = useCurrentPocketBaseUser();
@@ -65,9 +65,15 @@ const tabName = ref('login');
 const db = createPocketBaseDb();
 const users = ref<z.infer<typeof pocketBaseUsersModelSchema>>([]);
 
-onMounted(async () => {
-  const newUsers = await db.collection('users').getList(1, 50);
-  const response = pocketBaseUsersModelSchema.safeParse(newUsers.items);
-  if (response.success) users.value = response.data;
-});
+watch(
+  currentUser,
+  async () => {
+    if (currentUser.value.isLoggedIn) {
+      const newUsers = await db.collection('users').getList(1, 50);
+      const response = pocketBaseUsersModelSchema.safeParse(newUsers.items);
+      if (response.success) users.value = response.data;
+    }
+  },
+  { immediate: true }
+);
 </script>

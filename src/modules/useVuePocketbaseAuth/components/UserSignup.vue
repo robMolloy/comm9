@@ -64,6 +64,11 @@
           flat
           class="q-ml-sm"
         />
+        <q-btn
+          label="Fill with default values"
+          color="primary"
+          @click="fillWithDefaultValues"
+        />
       </div>
     </q-form>
   </div>
@@ -79,14 +84,24 @@ const $q = useQuasar();
 const isPasswordVisible = ref(false);
 const isPasswordConfirmVisible = ref(false);
 
-const randomToken = Math.floor(Math.random() * 10000);
-const createDefaultFormValues = () => ({
-  name: `werty${randomToken}`,
-  username: `werty${randomToken}`,
-  password: `werty${randomToken}`,
-  passwordConfirm: `werty${randomToken}`,
-  accept: true,
-});
+const createDefaultFormValues = (withDefaultValues = false) => {
+  const randomToken = Math.floor(Math.random() * 10000);
+  return withDefaultValues
+    ? {
+        name: `werty${randomToken}`,
+        username: `werty${randomToken}`,
+        password: `werty${randomToken}`,
+        passwordConfirm: `werty${randomToken}`,
+        accept: true,
+      }
+    : {
+        name: '',
+        username: '',
+        password: '',
+        passwordConfirm: '',
+        accept: false,
+      };
+};
 const formValues = ref(createDefaultFormValues());
 
 const onSubmit = async () => {
@@ -112,4 +127,6 @@ const onSubmit = async () => {
 };
 
 const onReset = () => (formValues.value = createDefaultFormValues());
+const fillWithDefaultValues = () =>
+  (formValues.value = createDefaultFormValues(true));
 </script>
