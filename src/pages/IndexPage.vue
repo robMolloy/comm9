@@ -17,61 +17,50 @@
     </q-card>
 
     <div v-if="currentUser.isLoggedIn">
-      <q-list>
-        <template v-if="users.length !== 0">
-          <ChatSidebarItem
-            v-for="(user, j) in users"
-            :avatar-url="user.avatarUrl ?? 'no info'"
-            :label="user.username ?? 'no info'"
-            recent-message="no message yet"
-            :key="j"
-          />
-        </template>
-        <template v-if="users.length === 0">
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-          <ChatSidebarItemSkeleton />
-        </template>
-      </q-list>
+      <template v-if="usersStore.otherUsers === undefined">
+        <ChatSidebarSkeletonList />
+      </template>
+      <template v-else>
+        <ChatSidebarList :values="values" />
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ChatSidebarItem } from 'src/modules';
-import ChatSidebarItemSkeleton from 'src/modules/chatSidebar/components/ChatSidebarItemSkeleton.vue';
-import {
-  UserLogin,
-  UserSignup,
-  createPocketBaseDb,
-  useCurrentPocketBaseUser,
-} from 'src/modules/useVuePocketbaseAuth';
-import { pocketBaseUsersModelSchema } from 'src/modules/useVuePocketbaseAuth/schemas/pocketBaseUserModelSchemas';
 import { ref, watch } from 'vue';
-import { z } from 'zod';
+
+import { UserLogin, UserSignup, useCurrentPocketBaseUser } from 'src/modules';
+import { useUsersStore } from 'src/stores/useUsersStore';
+import ChatSidebarSkeletonList from 'src/modules/chatSidebar/components/ChatSidebarSkeletonList.vue';
+import ChatSidebarList from 'src/modules/chatSidebar/components/ChatSidebarList.vue';
+import { computed } from 'vue';
 
 const currentUser = useCurrentPocketBaseUser();
 const tabName = ref('login');
 
-const db = createPocketBaseDb();
-const users = ref<z.infer<typeof pocketBaseUsersModelSchema>>([]);
+// const db = createPocketBaseDb();
+const usersStore = useUsersStore();
+
+const values = computed(() => {
+  if (!usersStore.otherUsers)
+    return [] as {
+      avatarUrl: string;
+      label: string;
+    }[];
+  return usersStore.otherUsers.map((user) => {
+    return {
+      avatarUrl: user.avatarUrl,
+      label: user.username,
+    };
+  });
+});
 
 watch(
   currentUser,
   async () => {
     if (currentUser.value.isLoggedIn) {
-      const newUsers = await db.collection('users').getList(1, 50);
-      const response = pocketBaseUsersModelSchema.safeParse(newUsers.items);
-      if (response.success) users.value = response.data;
+      usersStore.init();
     }
   },
   { immediate: true }

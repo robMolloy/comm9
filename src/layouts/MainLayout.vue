@@ -57,7 +57,7 @@
             />
           </template>
           <template v-for="(_, j) in Array(30).fill(true)" :key="j">
-            <ChatSidebarItemSkeleton />
+            <ChatSidebarSkeletonItem />
           </template>
         </q-list>
       </q-scroll-area>
@@ -75,7 +75,7 @@
 import { ref, computed } from 'vue';
 import {
   ChatSidebarItem,
-  ChatSidebarItemSkeleton,
+  ChatSidebarSkeletonItem,
   chatSidebarItemsFixture,
   useCurrentPocketBaseUser,
 } from 'src/modules';
