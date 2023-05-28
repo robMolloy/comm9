@@ -66,7 +66,6 @@
         />
         <q-btn
           label="Fill with default values"
-          color="primary"
           @click="fillWithDefaultValues"
         />
       </div>
