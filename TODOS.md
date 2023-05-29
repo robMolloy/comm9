@@ -1,3 +1,5 @@
+TODO: onclick sidebar message go to chats/username
+
 TODO: audit components - dumb components only (inc. events)
 
 TODO: decide where is the most appropriate place to populate stores
