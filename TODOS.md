@@ -10,4 +10,4 @@ TODO: audit components - dumb components only (inc. events)
 TODO: uninit on logout; store listener on login, cancel and reset to starting values
 
 TODO: clean up useCurrentpocketbaseUser
-TODO: fix useCurrentpocketbaseUser -> sign in repetitively - newly created users aren't being fetched
+TODO: fix useCurrentpocketbaseUser -> auth store change on sign up x2 (check logs) - try simple

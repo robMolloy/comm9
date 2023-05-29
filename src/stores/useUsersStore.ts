@@ -7,6 +7,7 @@ import {
 import { z } from 'zod';
 
 const createInitialValues = () => ({
+  started: false,
   db: createPocketBaseDb(),
   users: undefined as undefined | z.infer<typeof pocketBaseUsersModelSchema>,
 });
@@ -20,27 +21,34 @@ export const useUsersStore = defineStore('users', {
     },
   },
   actions: {
-    init() {
+    start() {
+      if (this.started) return;
       (async () => {
+        this.started = true;
         await this.getAll();
         this.subscribe();
       })();
+    },
+    stop() {
+      if (!this.started) return;
+      this.started = false;
+      this.unsubscribe();
+      this.users = undefined;
     },
     getAll() {
       (async () => {
         const users = await this.db.collection('users').getFullList();
         const response = pocketBaseUsersModelSchema.safeParse(users);
         if (response.success) this.users = response.data;
-
-        this.subscribe();
       })();
+    },
+    unsubscribe() {
+      this.db.collection('users').unsubscribe('*');
     },
     subscribe() {
       this.db
         .collection('users')
         .subscribe('*', async ({ action, record: user }) => {
-          console.log(/*LL*/ 11, 'action', action);
-          console.log(/*LL*/ 11, 'user', user);
           if (action === 'create') {
             const response = pocketBaseUserModelSchema.safeParse(user);
             if (response.success)

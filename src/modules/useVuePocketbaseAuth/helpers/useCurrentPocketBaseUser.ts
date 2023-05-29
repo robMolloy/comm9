@@ -31,14 +31,13 @@ const parsePocketBaseUserModelWithDefaults = (model: unknown) => {
 };
 
 let isInitialised = false;
-
 export const useCurrentPocketBaseUser = () => {
   const usersStore = useUsersStore();
   const db = createPocketBaseDb();
   const model = ref(parsePocketBaseUserModelWithDefaults(db.authStore.model));
   if (!isInitialised) {
     if (!!db.authStore.model) {
-      usersStore.init();
+      usersStore.start();
     }
     isInitialised = true;
   }
@@ -48,7 +47,9 @@ export const useCurrentPocketBaseUser = () => {
     model.value = parsePocketBaseUserModelWithDefaults(newModel);
 
     if (!!model.value) {
-      usersStore.init();
+      usersStore.start();
+    } else {
+      usersStore.stop();
     }
   });
 
