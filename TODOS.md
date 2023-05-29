@@ -18,6 +18,7 @@ TODO: add database files to .gitignore
 TODO: firestore/pocketbase db dependency injection
 
 TODO: email verification
+TODO: admin UI
 
 TODO: restructure app once dumbify is complete
-TODO: deploy app
+TODO: deploy app - linode
