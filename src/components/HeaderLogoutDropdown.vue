@@ -1,8 +1,8 @@
 <template>
   <q-btn-dropdown v-if="currentUser.isLoggedIn" flat dense>
     <template v-slot:label>
-      <q-avatar>
-        <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+      <q-avatar color="white">
+        <img :src="currentUser.model?.avatarUrl ?? ''" />
       </q-avatar>
     </template>
     <q-list>

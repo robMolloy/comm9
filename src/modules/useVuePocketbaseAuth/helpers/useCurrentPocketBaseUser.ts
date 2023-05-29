@@ -14,6 +14,7 @@ const pocketBaseUserModelSchema = z
     id: z.string(),
     username: z.string(),
     avatar: z.string(),
+    avatarUrl: z.string(),
     collectionId: z.string(),
     collectionName: z.string(),
     created: z.string(),

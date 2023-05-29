@@ -38,7 +38,14 @@ const onLoginSucccess = async (formValues: {
   password: string;
 }) => {
   $q.loading.show();
-  await currentUser.value.login(formValues);
+  const response = await currentUser.value.login(formValues);
+  if (!response.success)
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: `${response.error.message}`,
+    });
   $q.loading.hide();
 };
 const onSignupSucccess = async (formValues: {
@@ -49,7 +56,19 @@ const onSignupSucccess = async (formValues: {
   accept: boolean;
 }) => {
   $q.loading.show();
-  await currentUser.value.signupAndLogin(formValues);
+  const response = await currentUser.value.signupAndLogin(formValues);
+
+  if (!response.success) {
+    const errorMessageDetails = Object.values(response.error.data)
+      .map((x) => x.message)
+      .join(', ');
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: `${response.error.message}: ${errorMessageDetails}`,
+    });
+  }
   $q.loading.hide();
 };
 

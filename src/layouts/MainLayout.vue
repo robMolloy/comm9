@@ -36,18 +36,13 @@
       :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
     >
       <q-scroll-area class="fit">
-        <q-list>
-          <template v-for="(li, j) in chatSidebarItemsFixture" :key="j">
-            <ChatSidebarItem
-              recentMessage="some caption"
-              :avatarUrl="li.avatarUrl"
-              :label="li.label"
-            />
-          </template>
-          <template v-for="(_, j) in Array(30).fill(true)" :key="j">
-            <ChatSidebarSkeletonItem />
-          </template>
-        </q-list>
+        <template v-if="usersStore.otherUsers === undefined">
+          <ChatSidebarSkeletonList />
+        </template>
+        <template v-else-if="usersStore.otherUsers.length > 0">
+          <ChatSidebarList :values="values" />
+        </template>
+        <template v-else> Looks like it's just you in here... </template>
       </q-scroll-area>
     </q-drawer>
 
@@ -60,18 +55,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import {
-  ChatSidebarItem,
-  ChatSidebarSkeletonItem,
-  chatSidebarItemsFixture,
   useCurrentPocketBaseUser,
+  ChatSidebarList,
+  ChatSidebarSkeletonList,
 } from 'src/modules';
 import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
+import { useUsersStore } from 'src/stores/useUsersStore';
 
 const currentUser = useCurrentPocketBaseUser();
+const usersStore = useUsersStore();
 
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
+
+const values = computed(() => {
+  if (!usersStore.otherUsers)
+    return [] as {
+      avatarUrl: string;
+      label: string;
+    }[];
+  return usersStore.otherUsers.map((user) => {
+    return {
+      avatarUrl: user.avatarUrl,
+      label: user.username,
+    };
+  });
+});
 </script>
