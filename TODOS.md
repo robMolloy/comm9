@@ -15,3 +15,6 @@ TODO: conversation add button
 TODO: search conversations
 
 TODO: add database files to .gitignore
+TODO: firestore/pocketbase db dependency injection
+
+TODO: restructure app once dumbify is complete
