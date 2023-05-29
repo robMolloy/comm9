@@ -14,7 +14,6 @@
         <q-toolbar-title>Comm9</q-toolbar-title>
         <q-space />
         <NavigationTabs
-          selected-tab-base-url=""
           :tabs="[
             { label: 'Home', baseUrl: '/' },
             { label: 'Chats', baseUrl: '/chats' },
