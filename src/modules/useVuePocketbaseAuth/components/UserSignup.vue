@@ -76,12 +76,11 @@
 <script setup>
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
-import { useCurrentPocketBaseUser } from '../helpers';
 
-const currentUser = useCurrentPocketBaseUser();
 const $q = useQuasar();
 const isPasswordVisible = ref(false);
 const isPasswordConfirmVisible = ref(false);
+const emit = defineEmits(['onSuccess']);
 
 const createDefaultFormValues = (withDefaultValues = false) => {
   const randomToken = Math.floor(Math.random() * 10000);
@@ -112,16 +111,7 @@ const onSubmit = async () => {
       message: 'You need to accept the license and terms first',
     });
   } else {
-    $q.loading.show();
-    await currentUser.value.signupAndLogin(formValues.value);
-    $q.loading.hide();
-
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: 'Submitted',
-    });
+    emit('onSuccess', formValues.value);
   }
 };
 

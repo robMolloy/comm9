@@ -6,11 +6,13 @@ import {
 } from 'src/modules/useVuePocketbaseAuth/schemas';
 import { z } from 'zod';
 
+const createInitialValues = () => ({
+  db: createPocketBaseDb(),
+  users: undefined as undefined | z.infer<typeof pocketBaseUsersModelSchema>,
+});
+
 export const useUsersStore = defineStore('users', {
-  state: () => ({
-    db: createPocketBaseDb(),
-    users: undefined as undefined | z.infer<typeof pocketBaseUsersModelSchema>,
-  }),
+  state: () => createInitialValues(),
   getters: {
     otherUsers: (state) => {
       if (state.users === undefined) return undefined;

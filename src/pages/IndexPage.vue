@@ -11,7 +11,7 @@
           <UserLogin />
         </q-tab-panel>
         <q-tab-panel name="signup">
-          <UserSignup />
+          <UserSignup @on-success="onSignupSucccess" />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -39,9 +39,23 @@ import {
   ChatSidebarList,
 } from 'src/modules';
 import { useUsersStore } from 'src/stores/useUsersStore';
+import { useQuasar } from 'quasar';
 
+const $q = useQuasar();
 const currentUser = useCurrentPocketBaseUser();
 const tabName = ref('login');
+
+const onSignupSucccess = async (formValues: {
+  name: string;
+  username: string;
+  password: string;
+  passwordConfirm: string;
+  accept: boolean;
+}) => {
+  $q.loading.show();
+  await currentUser.value.signupAndLogin(formValues);
+  $q.loading.hide();
+};
 
 // const db = createPocketBaseDb();
 const usersStore = useUsersStore();
