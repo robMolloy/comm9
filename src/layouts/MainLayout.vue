@@ -13,27 +13,16 @@
         />
         <q-toolbar-title>Comm9</q-toolbar-title>
         <q-space />
+        <NavigationTabs
+          selected-tab-base-url=""
+          :tabs="[
+            { label: 'Home', baseUrl: '/' },
+            { label: 'Chats', baseUrl: '/chats' },
+            { label: 'profiles', baseUrl: '/profiles' },
+          ]"
+        />
 
-        <q-tabs v-model="tabName">
-          <q-tab name="/" label="Home" @click="() => $router.push('/')" />
-          <q-tab
-            name="/chats"
-            label="Chats"
-            @click="() => $router.push('/chats')"
-          />
-          <q-tab
-            name="/profiles"
-            label="Profiles"
-            @click="() => $router.push('/profiles')"
-          />
-        </q-tabs>
-        <q-btn
-          v-if="currentUser.isLoggedIn"
-          color="secondary"
-          @click="() => currentUser.logout()"
-        >
-          logout
-        </q-btn>
+        <HeaderLogoutDropdown />
       </q-toolbar>
     </q-header>
 
@@ -72,19 +61,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import {
   ChatSidebarItem,
   ChatSidebarSkeletonItem,
   chatSidebarItemsFixture,
   useCurrentPocketBaseUser,
 } from 'src/modules';
-import { useRoute } from 'vue-router';
+import NavigationTabs from 'src/components/NavigationTabs.vue';
+import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 
 const currentUser = useCurrentPocketBaseUser();
 
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
-const route = useRoute();
-const tabName = computed(() => `/${route.fullPath.split('/')[1]}`);
 </script>
