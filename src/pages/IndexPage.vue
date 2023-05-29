@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-card v-if="!currentUser.isLoggedIn">
-      <q-tabs v-model="tabName">
+      <q-tabs align="justify" v-model="tabName">
         <q-tab name="login" label="Login" />
         <q-tab name="signup" label="Signup" />
       </q-tabs>
@@ -20,21 +20,25 @@
       <template v-if="usersStore.otherUsers === undefined">
         <ChatSidebarSkeletonList />
       </template>
-      <template v-else>
+      <template v-else-if="usersStore.otherUsers.length > 0">
         <ChatSidebarList :values="values" />
       </template>
+      <template v-else> Looks like it's just you in here... </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
-import { UserLogin, UserSignup, useCurrentPocketBaseUser } from 'src/modules';
+import {
+  UserLogin,
+  UserSignup,
+  useCurrentPocketBaseUser,
+  ChatSidebarSkeletonList,
+  ChatSidebarList,
+} from 'src/modules';
 import { useUsersStore } from 'src/stores/useUsersStore';
-import ChatSidebarSkeletonList from 'src/modules/chatSidebar/components/ChatSidebarSkeletonList.vue';
-import ChatSidebarList from 'src/modules/chatSidebar/components/ChatSidebarList.vue';
-import { computed } from 'vue';
 
 const currentUser = useCurrentPocketBaseUser();
 const tabName = ref('login');
