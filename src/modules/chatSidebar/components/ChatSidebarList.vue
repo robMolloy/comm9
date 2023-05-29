@@ -6,6 +6,7 @@
       :label="prop.label ?? 'no info'"
       recent-message="no messages yet"
       :key="j"
+      @click="() => $emit('click', prop)"
     />
   </q-list>
 </template>
@@ -15,5 +16,9 @@ import { ChatSidebarItem } from 'src/modules';
 
 const props = defineProps<{
   values: { avatarUrl?: string; label?: string }[];
+}>();
+
+defineEmits<{
+  (e: 'click', values: { avatarUrl?: string; label?: string }): void;
 }>();
 </script>

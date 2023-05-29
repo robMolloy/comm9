@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable v-ripple>
+  <q-item clickable v-ripple @click="handleClick">
     <q-item-section avatar>
       <q-avatar size="xl">
         <img :src="props.avatarUrl" />
@@ -23,4 +23,10 @@ const props = defineProps<{
   label: string;
   recentMessage: string;
 }>();
+
+const emit = defineEmits<{
+  (e: 'click'): void;
+}>();
+
+const handleClick = () => emit('click');
 </script>

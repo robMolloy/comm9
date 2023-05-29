@@ -4,7 +4,8 @@ TODO: sidebar - all chats vs historic chats
 
 TODO: sidebar - open/close using store & create header toggle sidebar button
 
-TODO: onclick sidebar message go to chats/username
+~~TODO: onclick sidebar message go to chats/username~~
+TODO: Highlight sidebarItem if at that URL
 
 TODO: audit components - dumb components only (inc. events)
 

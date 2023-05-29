@@ -40,7 +40,10 @@
           <ChatSidebarSkeletonList />
         </template>
         <template v-else-if="usersStore.otherUsers.length > 0">
-          <ChatSidebarList :values="values" />
+          <ChatSidebarList
+            :values="values"
+            @click="(e) => $router.push(`/chats/${e.label}`)"
+          />
         </template>
         <template v-else> Looks like it's just you in here... </template>
       </q-scroll-area>
@@ -70,6 +73,8 @@ const usersStore = useUsersStore();
 
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
+
+const log = console.log;
 
 const values = computed(() => {
   if (!usersStore.otherUsers)
