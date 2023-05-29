@@ -1,20 +1,11 @@
 <template>
   <div>
-    <q-card v-if="!currentUser.isLoggedIn">
-      <q-tabs align="justify" v-model="tabName">
-        <q-tab name="login" label="Login" />
-        <q-tab name="signup" label="Signup" />
-      </q-tabs>
-
-      <q-tab-panels v-model="tabName" animated>
-        <q-tab-panel name="login">
-          <UserLogin />
-        </q-tab-panel>
-        <q-tab-panel name="signup">
-          <UserSignup @on-success="onSignupSucccess" />
-        </q-tab-panel>
-      </q-tab-panels>
-    </q-card>
+    <template v-if="!currentUser.isLoggedIn">
+      <UserLoginSignupCard
+        @on-login-success="onLoginSucccess"
+        @on-signup-success="onSignupSucccess"
+      />
+    </template>
 
     <div v-if="currentUser.isLoggedIn">
       <template v-if="usersStore.otherUsers === undefined">
@@ -29,22 +20,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
-
+import { computed } from 'vue';
 import {
-  UserLogin,
-  UserSignup,
   useCurrentPocketBaseUser,
   ChatSidebarSkeletonList,
   ChatSidebarList,
 } from 'src/modules';
 import { useUsersStore } from 'src/stores/useUsersStore';
 import { useQuasar } from 'quasar';
+import UserLoginSignupCard from 'src/modules/useVuePocketbaseAuth/components/UserLoginSignupCard.vue';
 
 const $q = useQuasar();
 const currentUser = useCurrentPocketBaseUser();
-const tabName = ref('login');
 
+const onLoginSucccess = async (formValues: {
+  username: string;
+  password: string;
+}) => {
+  $q.loading.show();
+  await currentUser.value.login(formValues);
+  $q.loading.hide();
+};
 const onSignupSucccess = async (formValues: {
   name: string;
   username: string;
@@ -57,7 +53,6 @@ const onSignupSucccess = async (formValues: {
   $q.loading.hide();
 };
 
-// const db = createPocketBaseDb();
 const usersStore = useUsersStore();
 
 const values = computed(() => {
@@ -73,14 +68,4 @@ const values = computed(() => {
     };
   });
 });
-
-watch(
-  currentUser,
-  async () => {
-    if (currentUser.value.isLoggedIn) {
-      usersStore.init();
-    }
-  },
-  { immediate: true }
-);
 </script>

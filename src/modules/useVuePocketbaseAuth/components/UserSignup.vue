@@ -73,25 +73,26 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 
 const $q = useQuasar();
 const isPasswordVisible = ref(false);
 const isPasswordConfirmVisible = ref(false);
-const emit = defineEmits(['onSuccess']);
+
+const emit = defineEmits<{
+  (
+    e: 'onSuccess',
+    formValues: ReturnType<typeof createDefaultFormValues>
+  ): void;
+}>();
 
 const createDefaultFormValues = (withDefaultValues = false) => {
   const randomToken = Math.floor(Math.random() * 10000);
+  const x = `werty${randomToken}`;
   return withDefaultValues
-    ? {
-        name: `werty${randomToken}`,
-        username: `werty${randomToken}`,
-        password: `werty${randomToken}`,
-        passwordConfirm: `werty${randomToken}`,
-        accept: true,
-      }
+    ? { name: x, username: x, password: x, passwordConfirm: x, accept: true }
     : {
         name: '',
         username: '',

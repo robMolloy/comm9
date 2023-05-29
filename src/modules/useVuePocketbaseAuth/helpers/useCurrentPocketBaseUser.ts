@@ -7,6 +7,7 @@ import {
   signupAndLoginWithPocketBase,
   signupWithPocketBase,
 } from './pocketBaseUserActions';
+import { useUsersStore } from 'src/stores/useUsersStore';
 
 const pocketBaseUserModelSchema = z
   .object({
@@ -29,13 +30,26 @@ const parsePocketBaseUserModelWithDefaults = (model: unknown) => {
   return parseResponse.success ? parseResponse.data : null;
 };
 
+let isInitialised = false;
+
 export const useCurrentPocketBaseUser = () => {
+  const usersStore = useUsersStore();
   const db = createPocketBaseDb();
   const model = ref(parsePocketBaseUserModelWithDefaults(db.authStore.model));
+  if (!isInitialised) {
+    if (!!db.authStore.model) {
+      usersStore.init();
+    }
+    isInitialised = true;
+  }
 
   db.authStore.onChange((_auth, newModel) => {
     console.log(/*LL*/ 11, 'auth Store changed!', _auth);
     model.value = parsePocketBaseUserModelWithDefaults(newModel);
+
+    if (!!model.value) {
+      usersStore.init();
+    }
   });
 
   return computed(() => ({

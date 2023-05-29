@@ -10,3 +10,5 @@ TODO: Dumbify Signup component
 TODO: Dumbify Login component
 
 TODO: uninit on logout; store listener on login, cancel and reset to starting values
+
+TODO: clean up useCurrentpocketbaseUser
