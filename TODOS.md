@@ -1,10 +1,17 @@
-TODO: create messages
-
-TODO: decide where is the most appropriate place to populate stores
-
 TODO: audit components - dumb components only (inc. events)
 
-TODO: clean up useCurrentpocketbaseUser
+TODO: decide where is the most appropriate place to populate stores
+TODO: clean up useCurrentPocketbaseUser
 TODO: fix useCurrentpocketbaseUser -> auth store change on sign up x2 (check logs) - try simple
 
 TODO: login page - card too big on desktop
+
+TODO: create messages store
+TODO: create messages
+
+TODO: create users and messages store
+TODO: Only show users that have been messaged
+TODO: conversation add button
+TODO: search conversations
+
+TODO: add database files to .gitignore
