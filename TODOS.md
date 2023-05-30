@@ -2,6 +2,8 @@ TODO: sidebar - start new conversation
 TODO: sidebar - search
 TODO: sidebar - all chats vs historic chats
 
+TODO: move login/signup to mainLayout?
+
 TODO: sidebar - open/close using store & create header toggle sidebar button
 
 ~~TODO: onclick sidebar message go to chats/username~~

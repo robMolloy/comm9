@@ -2,6 +2,7 @@
   <q-list>
     <ChatSidebarItem
       v-for="(prop, j) in props.values"
+      :active="props.activeUsername === prop.label"
       :avatar-url="prop.avatarUrl ?? 'no info'"
       :label="prop.label ?? 'no info'"
       recent-message="no messages yet"
@@ -16,6 +17,7 @@ import { ChatSidebarItem } from 'src/modules';
 
 const props = defineProps<{
   values: { avatarUrl?: string; label?: string }[];
+  activeUsername?: string;
 }>();
 
 defineEmits<{

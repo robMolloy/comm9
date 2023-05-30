@@ -43,6 +43,7 @@
           <ChatSidebarList
             :values="values"
             @click="(e) => $router.push(`/chats/${e.label}`)"
+            :active-username="currentUsername"
           />
         </template>
         <template v-else> Looks like it's just you in here... </template>
@@ -58,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
   useCurrentPocketBaseUser,
   ChatSidebarList,
@@ -67,26 +68,25 @@ import {
 import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 import { useUsersStore } from 'src/stores/useUsersStore';
+import { useRoute } from 'vue-router';
 
 const currentUser = useCurrentPocketBaseUser();
 const usersStore = useUsersStore();
+const route = useRoute();
+const currentUsername = ref<string | undefined>(undefined);
+watch(
+  route,
+  (newValue) => (currentUsername.value = newValue.fullPath.split('/')[2]),
+  { deep: true, immediate: true }
+);
 
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
 
-const log = console.log;
-
 const values = computed(() => {
-  if (!usersStore.otherUsers)
-    return [] as {
-      avatarUrl: string;
-      label: string;
-    }[];
-  return usersStore.otherUsers.map((user) => {
-    return {
-      avatarUrl: user.avatarUrl,
-      label: user.username,
-    };
-  });
+  return (usersStore.otherUsers ?? []).map((user) => ({
+    avatarUrl: user.avatarUrl,
+    label: user.username,
+  }));
 });
 </script>

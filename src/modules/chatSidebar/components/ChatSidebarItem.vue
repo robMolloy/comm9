@@ -1,5 +1,11 @@
 <template>
-  <q-item clickable v-ripple @click="handleClick">
+  <q-item
+    clickable
+    v-ripple
+    @click="handleClick"
+    :active="props.active"
+    active-class="bg-blue-grey-3"
+  >
     <q-item-section avatar>
       <q-avatar size="xl">
         <img :src="props.avatarUrl" />
@@ -19,6 +25,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
+  active?: boolean;
   avatarUrl: string;
   label: string;
   recentMessage: string;
@@ -30,3 +37,8 @@ const emit = defineEmits<{
 
 const handleClick = () => emit('click');
 </script>
+
+<style lang="sass">
+.active-item
+  background: #DDDDDD
+</style>
