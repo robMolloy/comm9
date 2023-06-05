@@ -6,9 +6,10 @@ TODO: sidebar - open/close using store & create header toggle sidebar button
 ~~TODO: onclick sidebar message go to chats/username~~
 TODO: Highlight sidebarItem if at that URL
 
-Login/Signup
+Auth
 TODO: move login/signup to mainLayout?
 TODO: login page - card too big on desktop
+TODO: Authstore - scenarios/pre-populated "loading" state
 
 Common
 TODO: audit components - dumb components only (inc. events)
@@ -22,6 +23,9 @@ TODO: Only show users that have been messaged (low priority)
 TODO: stores are for storing (and getting)!!! not fetching
 TODO: API responseS stores???
 TODO: store-driven scenarios
+
+Routes
+TODO: Block routes if not logged in
 
 API
 TODO: handle api errors
