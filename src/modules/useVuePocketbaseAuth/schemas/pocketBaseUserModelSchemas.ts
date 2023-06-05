@@ -1,22 +1,16 @@
 import { z } from 'zod';
 
-export const pocketBaseUserModelSchema = z
-  .object({
-    id: z.string(),
-    username: z.string(),
-    avatar: z.string(),
-    avatarUrl: z.string(),
-    collectionId: z.string(),
-    collectionName: z.string(),
-    created: z.string(),
-    email: z.string(),
-    emailVisibility: z.boolean(),
-    name: z.string(),
-    updated: z.string(),
-    verified: z.boolean(),
-  })
-  .passthrough()
-  .deepPartial();
+export const pocketBaseUserModelSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  avatar: z.string().optional(),
+  avatarUrl: z.string(),
+  collectionId: z.string(),
+  collectionName: z.string(),
+  created: z.string(),
+  email: z.string().optional(),
+  updated: z.string(),
+});
 export const pocketBaseUsersModelSchema = z.array(pocketBaseUserModelSchema);
 
 export const parsePocketBaseUserModelWithDefaults = (model: unknown) => {

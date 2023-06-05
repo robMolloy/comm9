@@ -8,6 +8,7 @@ import {
   signupWithPocketBase,
 } from './pocketBaseUserActions';
 import { useUsersStore } from 'src/stores/useUsersStore';
+import { useMessagesStore } from 'src/stores/useMessagesStore';
 
 const pocketBaseUserModelSchema = z
   .object({
@@ -34,11 +35,13 @@ const parsePocketBaseUserModelWithDefaults = (model: unknown) => {
 let isInitialised = false;
 export const useCurrentPocketBaseUser = () => {
   const usersStore = useUsersStore();
+  const messagesStore = useMessagesStore();
   const db = createPocketBaseDb();
   const model = ref(parsePocketBaseUserModelWithDefaults(db.authStore.model));
   if (!isInitialised) {
     if (!!db.authStore.model) {
       usersStore.start();
+      messagesStore.start();
     }
     isInitialised = true;
   }
@@ -49,8 +52,10 @@ export const useCurrentPocketBaseUser = () => {
 
     if (!!model.value) {
       usersStore.start();
+      messagesStore.start();
     } else {
       usersStore.stop();
+      messagesStore.stop();
     }
   });
 

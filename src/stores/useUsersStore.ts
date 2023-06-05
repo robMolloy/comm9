@@ -6,10 +6,13 @@ import {
 } from 'src/modules/useVuePocketbaseAuth/schemas';
 import { z } from 'zod';
 
+type TUser = z.infer<typeof pocketBaseUserModelSchema>;
+type TUsers = z.infer<typeof pocketBaseUsersModelSchema>;
+
 const createInitialValues = () => ({
   started: false,
   db: createPocketBaseDb(),
-  users: undefined as undefined | z.infer<typeof pocketBaseUsersModelSchema>,
+  users: undefined as undefined | TUsers,
 });
 
 export const useUsersStore = defineStore('users', {
@@ -18,6 +21,17 @@ export const useUsersStore = defineStore('users', {
     otherUsers: (state) => {
       if (state.users === undefined) return undefined;
       return state.users.filter((x) => x.id !== state.db.authStore.model?.id);
+    },
+    findUserByUsername: (state) => (username: string) => {
+      if (state.users === undefined) return undefined;
+      return state.users.find((x) => x.username === username);
+    },
+    indexedById: (state) => {
+      if (state.users === undefined) return undefined;
+
+      const rtn: { [k: string]: TUser } = {};
+      state.users.forEach((user) => (rtn[user.id] = user));
+      return rtn;
     },
   },
   actions: {
