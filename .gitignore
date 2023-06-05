@@ -31,3 +31,7 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+# Editor directories and files
+/pocketbase/pb_data
+/pocketbase/pb_migrations
