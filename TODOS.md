@@ -13,7 +13,6 @@ TODO: login page - card too big on desktop
 Common
 TODO: audit components - dumb components only (inc. events)
 TODO: restructure app once dumbify is complete
-TODO: fix useCurrentpocketbaseUser -> auth store change on sign up x2 (check logs) - try simple
 
 Stores
 TODO: create messagesWithUsers store
@@ -21,7 +20,7 @@ TODO: conversation add button
 TODO: search conversations
 TODO: Only show users that have been messaged (low priority)
 TODO: stores are for storing (and getting)!!! not fetching
-TODO: API responses stores???
+TODO: API responseS stores???
 TODO: store-driven scenarios
 
 API
@@ -35,3 +34,6 @@ TODO: admin UI
 
 Deploy
 TODO: deploy app - linode
+
+Rewrite
+TODO: Next 13
