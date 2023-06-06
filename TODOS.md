@@ -4,7 +4,7 @@ TODO: sidebar - search
 TODO: sidebar - all chats vs historic chats
 TODO: sidebar - open/close using store & create header toggle sidebar button
 ~~TODO: onclick sidebar message go to chats/username~~
-TODO: Highlight sidebarItem if at that URL
+~~TODO: Highlight sidebarItem if at that URL~~
 
 Auth
 TODO: move login/signup to mainLayout?

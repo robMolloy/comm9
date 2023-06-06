@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
-import { createPocketBaseDb } from 'src/modules';
+import { createPocketBaseDb, useCurrentPocketBaseUser } from 'src/modules';
 import {
   messageSchema,
   messagesSchema,
 } from 'src/modules/useVuePocketbaseAuth/schemas';
 import { z } from 'zod';
+import { useUsersStore } from './useUsersStore';
 
 const createInitialValues = () => ({
   started: false,
@@ -15,7 +16,7 @@ const createInitialValues = () => ({
 export const useMessagesStore = defineStore('messages', {
   state: () => createInitialValues(),
   getters: {
-    messagesUI: (state) => {
+    getMessagesUi: (state) => {
       if (state.data === undefined) return [];
       return state.data.map((x) => ({
         name: x.senderId,
@@ -23,6 +24,27 @@ export const useMessagesStore = defineStore('messages', {
         text: [x.text],
         sent: true,
       }));
+    },
+    getMessagesUiByUserId: (state) => (otherUserId: string) => {
+      if (state.data === undefined) return [];
+      const userstore = useUsersStore();
+      const usersIndexedById = userstore.indexedById ?? {};
+
+      const otherUser = usersIndexedById[otherUserId as string] ?? {};
+      const currentUser = useCurrentPocketBaseUser().value.model ?? {};
+
+      return state.data
+        .filter(
+          (x) => x.recipientId === otherUserId || x.senderId === otherUserId
+        )
+        .map((x) => {
+          return {
+            name: x.senderId === currentUser.id ? 'me' : otherUser.username,
+            avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
+            text: [x.text],
+            sent: x.senderId === otherUserId,
+          };
+        });
     },
   },
   actions: {
@@ -42,7 +64,10 @@ export const useMessagesStore = defineStore('messages', {
     },
     getAll() {
       (async () => {
-        const data = await this.db.collection('messages').getFullList();
+        const data = await this.db
+          .collection('messages')
+          .getFullList({ expand: 'senderId' });
+        console.log(/*LL*/ 48, 'data', data);
         const response = messagesSchema.safeParse(data);
         if (response.success) this.data = response.data;
       })();
@@ -55,6 +80,7 @@ export const useMessagesStore = defineStore('messages', {
         .collection('messages')
         .subscribe('*', async ({ action, record }) => {
           if (action === 'create') {
+            console.log(/*LL*/ 61, 'record', record);
             const response = messageSchema.safeParse(record);
             if (response.success)
               this.data = [...(this.data ?? []), response.data];

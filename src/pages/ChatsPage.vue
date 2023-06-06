@@ -1,7 +1,7 @@
 <template>
   <MessagingScreen
     v-model="text"
-    :messages="messagesStore.messagesUI"
+    :messages="messagesStore.getMessagesUiByUserId(currentUser.model?.id as string)"
     @submit="(e) => onSubmit(e)"
   />
 </template>
@@ -15,25 +15,22 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 defineEmits(['submit']);
-const messagesStore = useMessagesStore();
-
 const db = createPocketBaseDb();
-const route = useRoute();
-console.log(/*LL*/ 9, 'route.params.username', route.params.username);
-
+const messagesStore = useMessagesStore();
 const currentUser = useCurrentPocketBaseUser();
 const usersStore = useUsersStore();
+const route = useRoute();
 
 const text = ref('ttext');
 const onSubmit = async (e: string) => {
   const recipientUsername = route.params.username as string;
-  const recipient = usersStore.findUserByUsername(recipientUsername) ?? {
+  const contact = usersStore.findUserByUsername(recipientUsername) ?? {
     id: undefined,
   };
-  const recipientId = recipient.id;
+  const contactId = contact.id;
   const senderId = currentUser.value.model?.id;
 
-  const payload = { senderId, recipientId, text: e };
+  const payload = { senderId, recipientId: contactId, text: e };
   await db.collection('messages').create(payload);
   text.value = '';
 };
