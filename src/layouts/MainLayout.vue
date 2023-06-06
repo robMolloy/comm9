@@ -84,7 +84,7 @@ const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
 
 const values = computed(() => {
-  return (usersStore.otherUsers ?? []).map((user) => ({
+  return (usersStore ?? ([] as const)).map((user) => ({
     avatarUrl: user.avatarUrl,
     label: user.username,
   }));

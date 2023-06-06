@@ -13,7 +13,7 @@ const createInitialValues = () => ({
   data: undefined as undefined | z.infer<typeof messagesSchema>,
 });
 
-export const useMessagesStore = defineStore('messages', {
+export const useMessagesStore = defineStore('messages2', {
   state: () => createInitialValues(),
   getters: {
     getMessagesUi: (state) => {
