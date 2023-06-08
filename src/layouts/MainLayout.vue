@@ -69,25 +69,25 @@
       </q-scroll-area>
     </q-drawer>
 
-    <template v-if="currentUserStore.data.scenario === 'LOGGED_OUT'">
-      <UserLoginSignupCard
-        @on-login-success="onLoginSucccess"
-        @on-signup-success="onSignupSucccess"
-      />
-    </template>
+    <q-page-container>
+      <q-page padding>
+        <template v-if="currentUserStore.data.scenario === 'LOGGED_OUT'">
+          <UserLoginSignupCard
+            @on-login-success="onLoginSucccess"
+            @on-signup-success="onSignupSucccess"
+          />
+        </template>
 
-    <template v-if="currentUserStore.data.scenario === 'LOGGED_IN'">
-      <q-page-container>
-        <q-page padding>
+        <template v-if="currentUserStore.data.scenario === 'LOGGED_IN'">
           <router-view />
-        </q-page>
-      </q-page-container>
-    </template>
+        </template>
+      </q-page>
+    </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import {
   ChatSidebarList,
   ChatSidebarSkeletonList,
@@ -99,6 +99,7 @@ import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
 import { useContactsWithRecentMessageStore } from 'src/stores/useContactsWithRecentMessageStore';
 import { useQuasar } from 'quasar';
+import { positiveNotification, warningNotification } from 'src/notifications';
 import {
   loginWithPocketBase,
   signupAndLoginWithPocketBase,
@@ -119,21 +120,12 @@ const toggleMiniState = () => (miniState.value = !miniState.value);
 
 const $q = useQuasar();
 
-const onLoginSucccess = async (formValues: {
-  username: string;
-  password: string;
-}) => {
-  console.log(/*LL*/ 40, 'formValues', formValues);
+type TLoginFormValues = { username: string; password: string };
+const onLoginSucccess = async (formValues: TLoginFormValues) => {
   $q.loading.show();
-
   const response = await loginWithPocketBase(formValues);
-  if (!response.success)
-    $q.notify({
-      color: 'red-5',
-      textColor: 'white',
-      icon: 'warning',
-      message: `${response.error.message}`,
-    });
+  if (!response.success) positiveNotification(`${response.error.message}`);
+  if (!response.success) warningNotification(`${response.error.message}`);
   $q.loading.hide();
 };
 const onSignupSucccess = async (formValues: {
@@ -143,20 +135,16 @@ const onSignupSucccess = async (formValues: {
   passwordConfirm: string;
   accept: boolean;
 }) => {
-  console.log(/*LL*/ 59, 'formValues', formValues);
   $q.loading.show();
   const response = await signupAndLoginWithPocketBase(formValues);
 
-  if (!response.success) {
+  if (response.success) {
+    positiveNotification('Sign up success');
+  } else {
     const errorMessageDetails = Object.values(response.error.data)
       .map((x) => x.message)
       .join(', ');
-    $q.notify({
-      color: 'red-5',
-      textColor: 'white',
-      icon: 'warning',
-      message: `${response.error.message}: ${errorMessageDetails}`,
-    });
+    warningNotification(`${response.error.message}: ${errorMessageDetails}`);
   }
   $q.loading.hide();
 };
