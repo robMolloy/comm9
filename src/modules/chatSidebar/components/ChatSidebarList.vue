@@ -5,7 +5,7 @@
       :active="props.activeUsername === prop.label"
       :avatar-url="prop.avatarUrl ?? 'no info'"
       :label="prop.label ?? 'no info'"
-      recent-message="no messages yet"
+      :recent-message-text="prop.recentMessageText ?? 'no messages yet'"
       :key="j"
       @click="() => $emit('click', prop)"
     />
@@ -16,7 +16,7 @@
 import { ChatSidebarItem } from 'src/modules';
 
 const props = defineProps<{
-  values: { avatarUrl?: string; label?: string }[];
+  values: { avatarUrl?: string; label?: string; recentMessageText?: string }[];
   activeUsername?: string;
 }>();
 

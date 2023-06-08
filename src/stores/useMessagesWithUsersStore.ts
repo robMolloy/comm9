@@ -4,8 +4,8 @@ import { useMessages2Store } from './useMessages2Store';
 import { useCurrentUserStore } from './useCurrentUserStore';
 import { useUsers2Store } from './useUsers2Store';
 
-export const useMessagesWithContactsStore = defineStore(
-  'messagesWithContacts',
+export const useMessagesWithUsersStore = defineStore(
+  'messagesWithUsers',
   () => {
     const currentUserStore = useCurrentUserStore();
     const users2Store = useUsers2Store();
@@ -29,6 +29,24 @@ export const useMessagesWithContactsStore = defineStore(
       } as const;
     });
 
-    return { data };
+    const chatMessageScreenUiProps = computed(() => {
+      if (data.value.scenario !== 'VALID') return [];
+      if (currentUserStore.data.scenario !== 'LOGGED_IN') return [];
+
+      return data.value.data.map((x) => {
+        const isSenderCurrentUser =
+          //TODO: What is causing this scenario check to be required???
+          currentUserStore.data.scenario === 'LOGGED_IN' &&
+          currentUserStore.data.data.id === x.sender?.id;
+        return {
+          name: isSenderCurrentUser ? 'me' : x.sender?.username,
+          avatar: x.sender?.avatarUrl,
+          text: [x.text],
+          sent: isSenderCurrentUser,
+        };
+      });
+    });
+
+    return { data, chatMessageScreenUiProps };
   }
 );

@@ -7,7 +7,7 @@
         :name="message.name"
         :avatar="message.avatar"
         :text="message.text"
-        :sent="message.sent"
+        :sent="!message.sent"
       />
     </div>
   </div>

@@ -17,7 +17,7 @@
         {{ props.label }}
       </q-item-label>
       <q-item-label caption>
-        {{ props.recentMessage }}
+        {{ props.recentMessageText }}
       </q-item-label>
     </q-item-section>
   </q-item>
@@ -28,7 +28,7 @@ const props = defineProps<{
   active?: boolean;
   avatarUrl: string;
   label: string;
-  recentMessage: string;
+  recentMessageText: string;
 }>();
 
 const emit = defineEmits<{
