@@ -37,29 +37,14 @@
     >
       <q-scroll-area class="fit">
         <template
-          v-if="
-            contactsWithRecentMessageStore.chatSidebarListUiProps.scenario ===
-            'LOADING'
-          "
+          v-if="chatSideBarListUiPropsStore.data.scenario === 'LOADING'"
         >
           <ChatSidebarSkeletonList />
         </template>
-        <template
-          v-if="
-            contactsWithRecentMessageStore.chatSidebarListUiProps.scenario ===
-            'VALID'
-          "
-        >
-          <template
-            v-if="
-              contactsWithRecentMessageStore.chatSidebarListUiProps.data
-                .length > 0
-            "
-          >
+        <template v-if="chatSideBarListUiPropsStore.data.scenario === 'VALID'">
+          <template v-if="chatSideBarListUiPropsStore.data.data.length > 0">
             <ChatSidebarList
-              :values="
-                contactsWithRecentMessageStore.chatSidebarListUiProps.data
-              "
+              :values="chatSideBarListUiPropsStore.data.data"
               @click="(e) => $router.push(`/chats/${e.label}`)"
               :active-username="currentUsername"
             />
@@ -97,18 +82,20 @@ import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
-import { useContactsWithRecentMessageStore } from 'src/stores/useContactsWithRecentMessageStore';
 import { useQuasar } from 'quasar';
 import { positiveNotification, warningNotification } from 'src/notifications';
 import {
   loginWithPocketBase,
   signupAndLoginWithPocketBase,
 } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
+import { useChatSideBarListUiPropsStore } from 'src/stores/useChatSideBarListUiPropsStore';
 
 const currentUserStore = useCurrentUserStore();
-const contactsWithRecentMessageStore = useContactsWithRecentMessageStore();
+const chatSideBarListUiPropsStore = useChatSideBarListUiPropsStore();
 const route = useRoute();
 const currentUsername = ref<string | undefined>(undefined);
+
+// TODO: can this be computed?
 watch(
   route,
   (newValue) => (currentUsername.value = newValue.fullPath.split('/')[2]),
