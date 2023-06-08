@@ -20,13 +20,13 @@ db
 TODO: never use db in vue files???
 
 Stores
-TODO: create messagesWithUsers store
+TODO: ~~create messagesWithUsers store~~
 TODO: conversation add button
 TODO: search conversations
 TODO: Only show users that have been messaged (low priority)
-TODO: stores are for storing (and getting)!!! not fetching
+TODO: ~~stores are for storing (and getting)!!! not fetching~~
 TODO: API responseS stores???
-TODO: store-driven scenarios
+TODO: ~~store-driven scenarios~~
 TODO: should currentsuserStore have a loading scenario?
 
 Routes

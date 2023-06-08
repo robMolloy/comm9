@@ -69,26 +69,42 @@
       </q-scroll-area>
     </q-drawer>
 
-    <q-page-container>
-      <q-page padding>
-        <router-view />
-      </q-page>
-    </q-page-container>
+    <template v-if="currentUserStore.data.scenario === 'LOGGED_OUT'">
+      <UserLoginSignupCard
+        @on-login-success="onLoginSucccess"
+        @on-signup-success="onSignupSucccess"
+      />
+    </template>
+
+    <template v-if="currentUserStore.data.scenario === 'LOGGED_IN'">
+      <q-page-container>
+        <q-page padding>
+          <router-view />
+        </q-page>
+      </q-page-container>
+    </template>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { ChatSidebarList, ChatSidebarSkeletonList } from 'src/modules';
+import {
+  ChatSidebarList,
+  ChatSidebarSkeletonList,
+  UserLoginSignupCard,
+} from 'src/modules';
 import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
 import { useContactsWithRecentMessageStore } from 'src/stores/useContactsWithRecentMessageStore';
-import { useContactsStore } from 'src/stores/useContactsStore';
+import { useQuasar } from 'quasar';
+import {
+  loginWithPocketBase,
+  signupAndLoginWithPocketBase,
+} from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
 
 const currentUserStore = useCurrentUserStore();
-const contactsStore = useContactsStore();
 const contactsWithRecentMessageStore = useContactsWithRecentMessageStore();
 const route = useRoute();
 const currentUsername = ref<string | undefined>(undefined);
@@ -101,14 +117,47 @@ watch(
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
 
-const values = computed(() => {
-  if (contactsWithRecentMessageStore.data.scenario !== 'VALID') return [];
-  const rtn = contactsWithRecentMessageStore.data.data.map((x) => ({
-    avatarUrl: x.avatarUrl,
-    label: x.username,
-    recentMessageText: x.recentMessage?.text,
-  }));
-  console.log(/*LL*/ 114, 'rtn', rtn);
-  return rtn;
-});
+const $q = useQuasar();
+
+const onLoginSucccess = async (formValues: {
+  username: string;
+  password: string;
+}) => {
+  console.log(/*LL*/ 40, 'formValues', formValues);
+  $q.loading.show();
+
+  const response = await loginWithPocketBase(formValues);
+  if (!response.success)
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: `${response.error.message}`,
+    });
+  $q.loading.hide();
+};
+const onSignupSucccess = async (formValues: {
+  name: string;
+  username: string;
+  password: string;
+  passwordConfirm: string;
+  accept: boolean;
+}) => {
+  console.log(/*LL*/ 59, 'formValues', formValues);
+  $q.loading.show();
+  const response = await signupAndLoginWithPocketBase(formValues);
+
+  if (!response.success) {
+    const errorMessageDetails = Object.values(response.error.data)
+      .map((x) => x.message)
+      .join(', ');
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: `${response.error.message}: ${errorMessageDetails}`,
+    });
+  }
+  $q.loading.hide();
+};
 </script>
