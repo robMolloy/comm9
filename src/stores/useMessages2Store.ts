@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { messageSchema, messagesSchema } from 'src/modules';
 import { ref } from 'vue';
 import { z } from 'zod';
-
+//
 type TDataScenarios =
   | { scenario: 'LOADING' }
   | { scenario: 'ERROR' }

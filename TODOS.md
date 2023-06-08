@@ -10,10 +10,14 @@ Auth
 TODO: move login/signup to mainLayout?
 TODO: login page - card too big on desktop
 TODO: Authstore - scenarios/pre-populated "loading" state
+TODO: Odd behaviour if two tabs open (both logged out) then both sign up - on second sign up new user created, but log in as first sign up user
 
 Common
 TODO: audit components - dumb components only (inc. events)
 TODO: restructure app once dumbify is complete
+
+db
+TODO: never use db in vue files???
 
 Stores
 TODO: create messagesWithUsers store
@@ -36,6 +40,9 @@ TODO: clean up useCurrentPocketbaseUser - src/boot/initStores
 Admin
 TODO: email verification
 TODO: admin UI
+
+Microservices
+TODO: sendMessage microservice - use JWT and admin, create "recent contact" table - change createMessage apiRule
 
 Deploy
 TODO: deploy app - linode

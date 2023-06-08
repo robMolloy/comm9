@@ -38,5 +38,18 @@ export const useUsers2Store = defineStore('users2', () => {
     safeAddData(parseResponse.data);
   };
 
-  return { data, handleSetData, safeSetData, safeAddData, handleAddData };
+  const findUserByUsername = (username: string) => {
+    return data.value.scenario === 'VALID'
+      ? data.value.data.find((user) => user.username === username)
+      : undefined;
+  };
+
+  return {
+    data,
+    handleSetData,
+    safeSetData,
+    safeAddData,
+    handleAddData,
+    findUserByUsername,
+  };
 });

@@ -1,12 +1,22 @@
 <template>
-  <q-btn-dropdown v-if="currentUser.isLoggedIn" flat dense>
+  <q-btn-dropdown
+    v-if="currentUserStore.data.scenario === 'LOGGED_IN'"
+    :label="currentUserStore.data.data.username"
+    flat
+    dense
+  >
     <template v-slot:label>
       <q-avatar color="white">
-        <img :src="currentUser.model?.avatarUrl ?? ''" />
+        <img :src="currentUserStore.data.data.avatarUrl" />
       </q-avatar>
     </template>
     <q-list>
-      <q-item clickable v-close-popup @click="() => currentUser.logout()" dense>
+      <q-item
+        clickable
+        v-close-popup
+        @click="() => logoutWithPocketBase()"
+        dense
+      >
         <q-item-section>
           <q-item-label>Logout</q-item-label>
         </q-item-section>
@@ -19,7 +29,8 @@
 </template>
 
 <script setup lang="ts">
-import { useCurrentPocketBaseUser } from 'src/modules';
+import { logoutWithPocketBase } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
+import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
 
-const currentUser = useCurrentPocketBaseUser();
+const currentUserStore = useCurrentUserStore();
 </script>

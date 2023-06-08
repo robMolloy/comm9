@@ -3,7 +3,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
-          v-if="currentUser.isLoggedIn"
+          v-if="currentUserStore.data.scenario === 'LOGGED_IN'"
           flat
           dense
           round
@@ -26,7 +26,7 @@
     </q-header>
 
     <q-drawer
-      v-if="currentUser.isLoggedIn"
+      v-if="currentUserStore.data.scenario === 'LOGGED_IN'"
       :value="true"
       show-if-above
       :mini="miniState"
@@ -36,17 +36,36 @@
       :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
     >
       <q-scroll-area class="fit">
-        <template v-if="usersStore.otherUsers === undefined">
+        <template
+          v-if="
+            contactsWithRecentMessageStore.chatSidebarListUiProps.scenario ===
+            'LOADING'
+          "
+        >
           <ChatSidebarSkeletonList />
         </template>
-        <template v-else-if="usersStore.otherUsers.length > 0">
-          <ChatSidebarList
-            :values="values"
-            @click="(e) => $router.push(`/chats/${e.label}`)"
-            :active-username="currentUsername"
-          />
+        <template
+          v-if="
+            contactsWithRecentMessageStore.chatSidebarListUiProps.scenario ===
+            'VALID'
+          "
+        >
+          <template
+            v-if="
+              contactsWithRecentMessageStore.chatSidebarListUiProps.data
+                .length > 0
+            "
+          >
+            <ChatSidebarList
+              :values="
+                contactsWithRecentMessageStore.chatSidebarListUiProps.data
+              "
+              @click="(e) => $router.push(`/chats/${e.label}`)"
+              :active-username="currentUsername"
+            />
+          </template>
+          <template v-else> Looks like it's just you in here... </template>
         </template>
-        <template v-else> Looks like it's just you in here... </template>
       </q-scroll-area>
     </q-drawer>
 
@@ -60,18 +79,17 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import {
-  useCurrentPocketBaseUser,
-  ChatSidebarList,
-  ChatSidebarSkeletonList,
-} from 'src/modules';
+import { ChatSidebarList, ChatSidebarSkeletonList } from 'src/modules';
 import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
-import { useUsersStore } from 'src/stores/useUsersStore';
 import { useRoute } from 'vue-router';
+import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
+import { useContactsWithRecentMessageStore } from 'src/stores/useContactsWithRecentMessageStore';
+import { useContactsStore } from 'src/stores/useContactsStore';
 
-const currentUser = useCurrentPocketBaseUser();
-const usersStore = useUsersStore();
+const currentUserStore = useCurrentUserStore();
+const contactsStore = useContactsStore();
+const contactsWithRecentMessageStore = useContactsWithRecentMessageStore();
 const route = useRoute();
 const currentUsername = ref<string | undefined>(undefined);
 watch(
@@ -84,9 +102,13 @@ const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
 
 const values = computed(() => {
-  return (usersStore ?? ([] as const)).map((user) => ({
-    avatarUrl: user.avatarUrl,
-    label: user.username,
+  if (contactsWithRecentMessageStore.data.scenario !== 'VALID') return [];
+  const rtn = contactsWithRecentMessageStore.data.data.map((x) => ({
+    avatarUrl: x.avatarUrl,
+    label: x.username,
+    recentMessageText: x.recentMessage?.text,
   }));
+  console.log(/*LL*/ 114, 'rtn', rtn);
+  return rtn;
 });
 </script>
