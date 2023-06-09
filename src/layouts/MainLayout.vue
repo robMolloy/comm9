@@ -87,14 +87,14 @@ import {
 import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 import { useRoute } from 'vue-router';
-import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
+import { useCurrentUserStore } from 'src/stores/useCurrentUserStore.js';
 import { useQuasar } from 'quasar';
 import { positiveNotification, warningNotification } from 'src/notifications';
 import {
   loginWithPocketBase,
   signupAndLoginWithPocketBase,
 } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
-import { useChatSideBarListUiPropsStore } from 'src/stores/useChatSideBarListUiPropsStore';
+import { useChatSideBarListUiPropsStore } from 'src/stores/helperStores/useChatSideBarListUiPropsStore.js';
 
 const currentUserStore = useCurrentUserStore();
 const chatSideBarListUiPropsStore = useChatSideBarListUiPropsStore();

@@ -20,8 +20,8 @@ import MessagingScreen from 'src/components/MessagingScreen.vue';
 import { createPocketBaseDb } from 'src/modules';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
-import { useMessagesWithUsersStore } from 'src/stores/useMessagesWithUsersStore.js';
+import { useCurrentUserStore } from 'src/stores/useCurrentUserStore.js';
+import { useMessagesWithUsersStore } from 'src/stores/helperStores/useMessagesWithUsersStore.js';
 import { useUsersStore } from 'src/stores/useUsersStore.js';
 
 defineEmits(['submit']);

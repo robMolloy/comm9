@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
-import { useMessagesStore } from './useMessagesStore';
-import { useCurrentUserStore } from './useCurrentUserStore';
-import { useUsersStore } from './useUsersStore';
+import { useMessagesStore } from '../useMessagesStore';
+import { useCurrentUserStore } from '../useCurrentUserStore';
+import { useUsersStore } from '../useUsersStore';
 
 export const useMessagesWithUsersStore = defineStore(
   'messagesWithUsers',

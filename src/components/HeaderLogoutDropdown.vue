@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { logoutWithPocketBase } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
-import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
+import { useCurrentUserStore } from 'src/stores/useCurrentUserStore.js';
 
 const currentUserStore = useCurrentUserStore();
 </script>

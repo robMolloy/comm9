@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
-import { useUsersStore } from './useUsersStore';
-import { useCurrentUserStore } from './useCurrentUserStore';
+import { useUsersStore } from '../useUsersStore';
+import { useCurrentUserStore } from '../useCurrentUserStore';
 
 export const useContactsStore = defineStore('contacts', () => {
   const currentUserStore = useCurrentUserStore();

@@ -1,21 +1,25 @@
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import { useContactsStore } from './useContactsStore';
-import { useMessagesStore } from './useMessagesStore';
+import { useMessagesStore } from '../useMessagesStore';
+import { useCurrentUserStore } from '../useCurrentUserStore';
 
 export const useContactsWithRecentMessageStore = defineStore(
   'contactsWithRecentMessage',
   () => {
-    const messages2Store = useMessagesStore();
+    const currentUserStore = useCurrentUserStore();
+    const messagesStore = useMessagesStore();
     const contactsStore = useContactsStore();
 
     const dataScenario = computed(() => {
+      if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN')
+        return currentUserStore.dataScenario;
       if (contactsStore.dataScenario.scenario !== 'VALID')
         return contactsStore.dataScenario;
-      if (messages2Store.dataScenario.scenario !== 'VALID')
-        return messages2Store.dataScenario;
+      if (messagesStore.dataScenario.scenario !== 'VALID')
+        return messagesStore.dataScenario;
 
-      const messages = messages2Store.dataScenario.data;
+      const messages = messagesStore.dataScenario.data;
       const contacts = contactsStore.dataScenario.data;
       return {
         scenario: 'VALID',
@@ -29,18 +33,6 @@ export const useContactsWithRecentMessageStore = defineStore(
       } as const;
     });
 
-    const chatSidebarListUiProps = computed(() => {
-      console.log(/*LL*/ 11, '123', 123);
-      if (dataScenario.value.scenario !== 'VALID') return dataScenario.value;
-      const rtn = dataScenario.value.data.map((x) => ({
-        avatarUrl: x.avatarUrl,
-        label: x.username,
-        recentMessageText: x.recentMessage?.text,
-      }));
-      console.log(/*LL*/ 37, 'rtn', rtn);
-      return { scenario: 'VALID', data: rtn };
-    });
-
-    return { dataScenario, chatSidebarListUiProps };
+    return { dataScenario };
   }
 );
