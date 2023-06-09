@@ -21,5 +21,6 @@ export const useCurrentUserStore = defineStore('currentUser', () => {
     safeSetData({ scenario: 'LOGGED_IN', data: parseResponse.data });
   };
 
+  //
   return { data, handleSetData, safeSetData };
 });
