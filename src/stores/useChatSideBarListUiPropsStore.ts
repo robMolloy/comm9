@@ -7,12 +7,12 @@ export const useChatSideBarListUiPropsStore = defineStore(
   () => {
     const contactsWithRecentMessageStore = useContactsWithRecentMessageStore();
 
-    const data = computed(() => {
-      if (contactsWithRecentMessageStore.data.scenario !== 'VALID')
-        return contactsWithRecentMessageStore.data;
+    const dataScenario = computed(() => {
+      if (contactsWithRecentMessageStore.dataScenario.scenario !== 'VALID')
+        return contactsWithRecentMessageStore.dataScenario;
 
       const contactsWithRecentMessage =
-        contactsWithRecentMessageStore.data.data;
+        contactsWithRecentMessageStore.dataScenario.data;
       return {
         scenario: 'VALID',
         data: contactsWithRecentMessage.map((x) => ({
@@ -23,6 +23,6 @@ export const useChatSideBarListUiPropsStore = defineStore(
       } as const;
     });
 
-    return { data };
+    return { dataScenario };
   }
 );

@@ -48,7 +48,6 @@ export const signupAndLoginWithPocketBase = async (
   p1: Parameters<typeof signupWithPocketBase>[0]
 ) => {
   const signupResponse = await signupWithPocketBase(p1);
-  console.log(/*LL*/ 11, 'signupResponse', signupResponse);
   if (!signupResponse.success) return signupResponse;
 
   const { username, password } = p1;

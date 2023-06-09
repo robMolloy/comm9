@@ -3,15 +3,15 @@ import { messageSchema, messagesSchema } from 'src/modules';
 import { ref } from 'vue';
 import { z } from 'zod';
 //
-type TDataScenarios =
+type TDataScenario =
   | { scenario: 'LOADING' }
   | { scenario: 'ERROR' }
   | { scenario: 'VALID'; data: z.infer<typeof messagesSchema> };
 
-export const useMessages2Store = defineStore('messages2', () => {
-  // const data = ref<TData>({ scenario: 'LOADING' });
-  const data = ref<TDataScenarios>({ scenario: 'LOADING' });
-  const safeSetData = (payload: TDataScenarios) => (data.value = payload);
+export const useMessagesStore = defineStore('messagesStore', () => {
+  const dataScenario = ref<TDataScenario>({ scenario: 'LOADING' });
+  const safeSetData = (payload: TDataScenario) =>
+    (dataScenario.value = payload);
 
   const handleSetData = (payload: unknown) => {
     // if (payload === undefined) return safeSetData({ scenario: 'LOADING' });
@@ -22,14 +22,17 @@ export const useMessages2Store = defineStore('messages2', () => {
   };
 
   const safeAddData = (payload: z.infer<typeof messageSchema>) => {
-    if (data.value.scenario !== 'VALID')
+    if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
 
-    data.value = { scenario: 'VALID', data: [...data.value.data, payload] };
+    dataScenario.value = {
+      scenario: 'VALID',
+      data: [...dataScenario.value.data, payload],
+    };
   };
 
   const handleAddData = (payload: unknown) => {
-    if (data.value.scenario !== 'VALID')
+    if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
 
     const parseResponse = messageSchema.safeParse(payload);
@@ -38,5 +41,11 @@ export const useMessages2Store = defineStore('messages2', () => {
     safeAddData(parseResponse.data);
   };
 
-  return { data, handleSetData, safeSetData, safeAddData, handleAddData };
+  return {
+    dataScenario,
+    handleSetData,
+    safeSetData,
+    safeAddData,
+    handleAddData,
+  };
 });

@@ -3,7 +3,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
-          v-if="currentUserStore.data.scenario === 'LOGGED_IN'"
+          v-if="currentUserStore.dataScenario.scenario === 'LOGGED_IN'"
           flat
           dense
           round
@@ -26,7 +26,7 @@
     </q-header>
 
     <q-drawer
-      v-if="currentUserStore.data.scenario === 'LOGGED_IN'"
+      v-if="currentUserStore.dataScenario.scenario === 'LOGGED_IN'"
       :value="true"
       show-if-above
       :mini="miniState"
@@ -37,14 +37,18 @@
     >
       <q-scroll-area class="fit">
         <template
-          v-if="chatSideBarListUiPropsStore.data.scenario === 'LOADING'"
+          v-if="chatSideBarListUiPropsStore.dataScenario.scenario === 'LOADING'"
         >
           <ChatSidebarSkeletonList />
         </template>
-        <template v-if="chatSideBarListUiPropsStore.data.scenario === 'VALID'">
-          <template v-if="chatSideBarListUiPropsStore.data.data.length > 0">
+        <template
+          v-if="chatSideBarListUiPropsStore.dataScenario.scenario === 'VALID'"
+        >
+          <template
+            v-if="chatSideBarListUiPropsStore.dataScenario.data.length > 0"
+          >
             <ChatSidebarList
-              :values="chatSideBarListUiPropsStore.data.data"
+              :values="chatSideBarListUiPropsStore.dataScenario.data"
               @click="(e) => $router.push(`/chats/${e.label}`)"
               :active-username="currentUsername"
             />
@@ -56,14 +60,16 @@
 
     <q-page-container>
       <q-page padding>
-        <template v-if="currentUserStore.data.scenario === 'LOGGED_OUT'">
+        <template
+          v-if="currentUserStore.dataScenario.scenario === 'LOGGED_OUT'"
+        >
           <UserLoginSignupCard
             @on-login-success="onLoginSucccess"
             @on-signup-success="onSignupSucccess"
           />
         </template>
 
-        <template v-if="currentUserStore.data.scenario === 'LOGGED_IN'">
+        <template v-if="currentUserStore.dataScenario.scenario === 'LOGGED_IN'">
           <router-view />
         </template>
       </q-page>

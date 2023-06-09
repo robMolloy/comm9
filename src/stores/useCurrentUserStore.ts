@@ -3,15 +3,15 @@ import { userSchema } from 'src/modules';
 import { ref } from 'vue';
 import { z } from 'zod';
 
-type TData =
-  // | { scenario: 'LOADING' }
+type TDataScenario =
   | { scenario: 'LOGGED_OUT' }
   | { scenario: 'LOGGED_IN'; data: z.infer<typeof userSchema> };
 
 export const useCurrentUserStore = defineStore('currentUser', () => {
   // const data = ref<TData>({ scenario: 'LOADING' });
-  const data = ref<TData>({ scenario: 'LOGGED_OUT' });
-  const safeSetData = (payload: TData) => (data.value = payload);
+  const dataScenario = ref<TDataScenario>({ scenario: 'LOGGED_OUT' });
+  const safeSetData = (payload: TDataScenario) =>
+    (dataScenario.value = payload);
 
   const handleSetData = (payload: unknown) => {
     // if (payload === undefined) return safeSetData({ scenario: 'LOADING' });
@@ -22,5 +22,5 @@ export const useCurrentUserStore = defineStore('currentUser', () => {
   };
 
   //
-  return { data, handleSetData, safeSetData };
+  return { dataScenario, handleSetData, safeSetData };
 });

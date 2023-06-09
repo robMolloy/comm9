@@ -1,26 +1,28 @@
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
-import { useMessages2Store } from './useMessages2Store';
+import { useMessagesStore } from './useMessagesStore';
 import { useCurrentUserStore } from './useCurrentUserStore';
-import { useUsers2Store } from './useUsers2Store';
+import { useUsersStore } from './useUsersStore';
 
 export const useMessagesWithUsersStore = defineStore(
   'messagesWithUsers',
   () => {
     const currentUserStore = useCurrentUserStore();
-    const users2Store = useUsers2Store();
-    const messages2Store = useMessages2Store();
+    const users2Store = useUsersStore();
+    const messages2Store = useMessagesStore();
 
-    const data = computed(() => {
-      if (currentUserStore.data.scenario !== 'LOGGED_IN')
-        return currentUserStore.data;
-      if (users2Store.data.scenario !== 'VALID') return users2Store.data;
-      if (messages2Store.data.scenario !== 'VALID') return messages2Store.data;
+    const dataScenario = computed(() => {
+      if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN')
+        return currentUserStore.dataScenario;
+      if (users2Store.dataScenario.scenario !== 'VALID')
+        return users2Store.dataScenario;
+      if (messages2Store.dataScenario.scenario !== 'VALID')
+        return messages2Store.dataScenario;
 
-      const users = users2Store.data.data;
+      const users = users2Store.dataScenario.data;
       return {
         scenario: 'VALID',
-        data: messages2Store.data.data.map((x) => ({
+        data: messages2Store.dataScenario.data.map((x) => ({
           ...x,
           // TODO: needs to be memoised (or indexed) in store
           sender: users.find((user) => user.id === x.senderId),
@@ -30,14 +32,14 @@ export const useMessagesWithUsersStore = defineStore(
     });
 
     const chatMessageScreenUiProps = computed(() => {
-      if (data.value.scenario !== 'VALID') return [];
-      if (currentUserStore.data.scenario !== 'LOGGED_IN') return [];
+      if (dataScenario.value.scenario !== 'VALID') return [];
+      if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN') return [];
 
-      return data.value.data.map((x) => {
+      return dataScenario.value.data.map((x) => {
         const isSenderCurrentUser =
           //TODO: What is causing this scenario check to be required???
-          currentUserStore.data.scenario === 'LOGGED_IN' &&
-          currentUserStore.data.data.id === x.sender?.id;
+          currentUserStore.dataScenario.scenario === 'LOGGED_IN' &&
+          currentUserStore.dataScenario.data.id === x.sender?.id;
         return {
           name: isSenderCurrentUser ? 'me' : x.sender?.username,
           avatar: x.sender?.avatarUrl,
@@ -47,6 +49,6 @@ export const useMessagesWithUsersStore = defineStore(
       });
     });
 
-    return { data, chatMessageScreenUiProps };
+    return { dataScenario, chatMessageScreenUiProps };
   }
 );

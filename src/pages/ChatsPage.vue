@@ -1,12 +1,12 @@
 <template>
-  <!-- <template v-if="currentUserStore.data.scenario === 'LOGGED_IN'">
+  <!-- <template v-if="currentUserStore.dataScenario.scenario === 'LOGGED_IN'">
     <MessagingScreen
       v-model="text"
       :messages="shownMessages"
       @submit="(e) => onSubmit(e)"
     />
   </template> -->
-  <template v-if="messagesWithUsersStore.data.scenario === 'VALID'">
+  <template v-if="messagesWithUsersStore.dataScenario.scenario === 'VALID'">
     <MessagingScreen
       v-model="text"
       :messages="messagesWithUsersStore.chatMessageScreenUiProps"
@@ -22,24 +22,24 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
 import { useMessagesWithUsersStore } from 'src/stores/useMessagesWithUsersStore.js';
-import { useUsers2Store } from 'src/stores/useUsers2Store';
+import { useUsersStore } from 'src/stores/useUsersStore.js';
 
 defineEmits(['submit']);
 const db = createPocketBaseDb();
 const messagesWithUsersStore = useMessagesWithUsersStore();
-const users2Store = useUsers2Store();
+const users2Store = useUsersStore();
 const currentUserStore = useCurrentUserStore();
 const route = useRoute();
 
 const text = ref('ttext');
 const onSubmit = async (e: string) => {
-  if (currentUserStore.data.scenario !== 'LOGGED_IN')
+  if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN')
     return console.error("can't send messages if not logged in");
 
   const recipientUsername = route.params.username as string;
   const recipient = users2Store.findUserByUsername(recipientUsername);
   const recipientId = recipient?.id;
-  const senderId = currentUserStore.data.data.id;
+  const senderId = currentUserStore.dataScenario.data.id;
 
   const payload = { senderId, recipientId, text: e };
   await db.collection('messages').create(payload);

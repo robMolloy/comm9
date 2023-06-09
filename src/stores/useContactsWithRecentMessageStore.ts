@@ -1,20 +1,22 @@
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import { useContactsStore } from './useContactsStore';
-import { useMessages2Store } from './useMessages2Store';
+import { useMessagesStore } from './useMessagesStore';
 
 export const useContactsWithRecentMessageStore = defineStore(
   'contactsWithRecentMessage',
   () => {
-    const messages2Store = useMessages2Store();
+    const messages2Store = useMessagesStore();
     const contactsStore = useContactsStore();
 
-    const data = computed(() => {
-      if (contactsStore.data.scenario !== 'VALID') return contactsStore.data;
-      if (messages2Store.data.scenario !== 'VALID') return messages2Store.data;
+    const dataScenario = computed(() => {
+      if (contactsStore.dataScenario.scenario !== 'VALID')
+        return contactsStore.dataScenario;
+      if (messages2Store.dataScenario.scenario !== 'VALID')
+        return messages2Store.dataScenario;
 
-      const messages = messages2Store.data.data;
-      const contacts = contactsStore.data.data;
+      const messages = messages2Store.dataScenario.data;
+      const contacts = contactsStore.dataScenario.data;
       return {
         scenario: 'VALID',
         data: contacts.map((contact) => ({
@@ -28,8 +30,9 @@ export const useContactsWithRecentMessageStore = defineStore(
     });
 
     const chatSidebarListUiProps = computed(() => {
-      if (data.value.scenario !== 'VALID') return data.value;
-      const rtn = data.value.data.map((x) => ({
+      console.log(/*LL*/ 11, '123', 123);
+      if (dataScenario.value.scenario !== 'VALID') return dataScenario.value;
+      const rtn = dataScenario.value.data.map((x) => ({
         avatarUrl: x.avatarUrl,
         label: x.username,
         recentMessageText: x.recentMessage?.text,
@@ -38,6 +41,6 @@ export const useContactsWithRecentMessageStore = defineStore(
       return { scenario: 'VALID', data: rtn };
     });
 
-    return { data, chatSidebarListUiProps };
+    return { dataScenario, chatSidebarListUiProps };
   }
 );

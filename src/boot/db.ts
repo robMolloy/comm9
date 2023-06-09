@@ -1,15 +1,15 @@
 import { boot } from 'quasar/wrappers';
 import { createPocketBaseDb } from 'src/modules';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
-import { useMessages2Store } from 'src/stores/useMessages2Store';
-import { useUsers2Store } from 'src/stores/useUsers2Store';
+import { useMessagesStore } from 'src/stores/useMessagesStore';
+import { useUsersStore } from 'src/stores/useUsersStore';
 
 export default boot(async () => {
   const db = createPocketBaseDb();
   const currentUserStore = useCurrentUserStore();
   currentUserStore.handleSetData(db.authStore.model);
-  const messages2Store = useMessages2Store();
-  const users2Store = useUsers2Store();
+  const messages2Store = useMessagesStore();
+  const users2Store = useUsersStore();
 
   const isLoggedIn = !!db.authStore.model?.id;
   if (isLoggedIn) {
@@ -31,7 +31,7 @@ export default boot(async () => {
 
   db.authStore.onChange(async (_auth, newModel) => {
     currentUserStore.handleSetData(newModel);
-    if (currentUserStore.data.scenario === 'LOGGED_IN') {
+    if (currentUserStore.dataScenario.scenario === 'LOGGED_IN') {
       // TODO: await together
       const messages = await db.collection('messages').getFullList();
       messages2Store.handleSetData(messages);
@@ -46,7 +46,7 @@ export default boot(async () => {
         if (action === 'create') users2Store.handleAddData(record);
       });
     }
-    if (currentUserStore.data.scenario === 'LOGGED_OUT') {
+    if (currentUserStore.dataScenario.scenario === 'LOGGED_OUT') {
       // TODO: on logout clear data
       db.collection('messages').unsubscribe();
       db.collection('users').unsubscribe();

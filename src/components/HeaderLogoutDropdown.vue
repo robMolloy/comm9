@@ -1,13 +1,13 @@
 <template>
   <q-btn-dropdown
-    v-if="currentUserStore.data.scenario === 'LOGGED_IN'"
-    :label="currentUserStore.data.data.username"
+    v-if="currentUserStore.dataScenario.scenario === 'LOGGED_IN'"
+    :label="currentUserStore.dataScenario.data.username"
     flat
     dense
   >
     <template v-slot:label>
       <q-avatar color="white">
-        <img :src="currentUserStore.data.data.avatarUrl" />
+        <img :src="currentUserStore.dataScenario.data.avatarUrl" />
       </q-avatar>
     </template>
     <q-list>

@@ -53,7 +53,6 @@ const onSignupSucccess = async (formValues: {
   passwordConfirm: string;
   accept: boolean;
 }) => {
-  console.log(/*LL*/ 56, 'formValues', formValues);
   emit('onSignupSuccess', formValues);
 };
 </script>
