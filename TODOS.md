@@ -48,4 +48,5 @@ Deploy
 TODO: deploy app - linode
 
 Rewrite
+TODO: Address scaleability issues - how much data to import
 TODO: Next 13

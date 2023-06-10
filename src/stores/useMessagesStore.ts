@@ -29,6 +29,10 @@ export const useMessagesStore = defineStore('messagesStore', () => {
     setSafeDataScenario({ scenario: 'VALID', data: parseResponse.data });
   };
 
+  const clearData = () => {
+    setSafeDataScenario({ scenario: 'LOADING' });
+  };
+
   const addSafeData = (payload: z.infer<typeof messageSchema>) => {
     if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
@@ -55,6 +59,7 @@ export const useMessagesStore = defineStore('messagesStore', () => {
     setSafeDataScenario,
     setSafeData,
     setUnknownData,
+    clearData,
     addSafeData,
     addUnknownData,
   };

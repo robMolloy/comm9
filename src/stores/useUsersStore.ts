@@ -28,6 +28,10 @@ export const useUsersStore = defineStore('users', () => {
     setSafeDataScenario({ scenario: 'VALID', data: parseResponse.data });
   };
 
+  const clearData = () => {
+    setSafeDataScenario({ scenario: 'LOADING' });
+  };
+
   const addSafeData = (payload: z.infer<typeof userSchema>) => {
     if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
@@ -60,6 +64,7 @@ export const useUsersStore = defineStore('users', () => {
     setSafeDataScenario,
     setSafeData,
     setUnknownData,
+    clearData,
     addSafeData,
     addUnknownData,
     findUserByUsername,
