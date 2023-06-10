@@ -8,19 +8,18 @@ type TDataScenario =
   | { scenario: 'LOGGED_IN'; data: z.infer<typeof userSchema> };
 
 export const useCurrentUserStore = defineStore('currentUser', () => {
-  // const data = ref<TData>({ scenario: 'LOADING' });
   const dataScenario = ref<TDataScenario>({ scenario: 'LOGGED_OUT' });
-  const safeSetData = (payload: TDataScenario) =>
+  const setSafeDataScenario = (payload: TDataScenario) =>
     (dataScenario.value = payload);
 
-  const handleSetData = (payload: unknown) => {
-    // if (payload === undefined) return safeSetData({ scenario: 'LOADING' });
+  const setUnknownData = (payload: unknown) => {
     const parseResponse = userSchema.safeParse(payload);
 
-    if (!parseResponse.success) return safeSetData({ scenario: 'LOGGED_OUT' });
-    safeSetData({ scenario: 'LOGGED_IN', data: parseResponse.data });
+    if (!parseResponse.success)
+      return setSafeDataScenario({ scenario: 'LOGGED_OUT' });
+    setSafeDataScenario({ scenario: 'LOGGED_IN', data: parseResponse.data });
   };
 
   //
-  return { dataScenario, handleSetData, safeSetData };
+  return { dataScenario, setUnknownData, setSafeDataScenario };
 });

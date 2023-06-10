@@ -10,18 +10,25 @@ type TDataScenario =
 
 export const useUsersStore = defineStore('users2', () => {
   const dataScenario = ref<TDataScenario>({ scenario: 'LOADING' });
-  const safeSetData = (payload: TDataScenario) =>
+  const setSafeDataScenario = (payload: TDataScenario) =>
     (dataScenario.value = payload);
 
-  const handleSetData = (payload: unknown) => {
-    // if (payload === undefined) return safeSetData({ scenario: 'LOADING' });
-    const parseResponse = usersSchema.safeParse(payload);
+  const setSafeData = (payload: z.infer<typeof usersSchema>) => {
+    if (dataScenario.value.scenario !== 'VALID')
+      return console.error('only safeSetUsers data when scenario "VALID"');
 
-    if (!parseResponse.success) return safeSetData({ scenario: 'ERROR' });
-    safeSetData({ scenario: 'VALID', data: parseResponse.data });
+    dataScenario.value = { scenario: 'VALID', data: payload };
   };
 
-  const safeAddData = (payload: z.infer<typeof userSchema>) => {
+  const setUnknownData = (payload: unknown) => {
+    const parseResponse = usersSchema.safeParse(payload);
+
+    if (!parseResponse.success)
+      return setSafeDataScenario({ scenario: 'ERROR' });
+    setSafeDataScenario({ scenario: 'VALID', data: parseResponse.data });
+  };
+
+  const addSafeData = (payload: z.infer<typeof userSchema>) => {
     if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
 
@@ -31,14 +38,15 @@ export const useUsersStore = defineStore('users2', () => {
     };
   };
 
-  const handleAddData = (payload: unknown) => {
+  const addUnknownData = (payload: unknown) => {
     if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
 
     const parseResponse = userSchema.safeParse(payload);
 
-    if (!parseResponse.success) return safeSetData({ scenario: 'ERROR' });
-    safeAddData(parseResponse.data);
+    if (!parseResponse.success)
+      return setSafeDataScenario({ scenario: 'ERROR' });
+    addSafeData(parseResponse.data);
   };
 
   const findUserByUsername = (username: string) => {
@@ -49,10 +57,11 @@ export const useUsersStore = defineStore('users2', () => {
 
   return {
     dataScenario,
-    handleSetData,
-    safeSetData,
-    safeAddData,
-    handleAddData,
+    setSafeDataScenario,
+    setSafeData,
+    setUnknownData,
+    addSafeData,
+    addUnknownData,
     findUserByUsername,
   };
 });

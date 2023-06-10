@@ -3,6 +3,7 @@ import { messageSchema, messagesSchema } from 'src/modules';
 import { ref } from 'vue';
 import { z } from 'zod';
 //
+
 type TDataScenario =
   | { scenario: 'LOADING' }
   | { scenario: 'ERROR' }
@@ -10,18 +11,25 @@ type TDataScenario =
 
 export const useMessagesStore = defineStore('messagesStore', () => {
   const dataScenario = ref<TDataScenario>({ scenario: 'LOADING' });
-  const safeSetData = (payload: TDataScenario) =>
+  const setSafeDataScenario = (payload: TDataScenario) =>
     (dataScenario.value = payload);
 
-  const handleSetData = (payload: unknown) => {
-    // if (payload === undefined) return safeSetData({ scenario: 'LOADING' });
-    const parseResponse = messagesSchema.safeParse(payload);
+  const setSafeData = (payload: z.infer<typeof messagesSchema>) => {
+    if (dataScenario.value.scenario !== 'VALID')
+      return console.error('only add message data when scenario "VALID"');
 
-    if (!parseResponse.success) return safeSetData({ scenario: 'ERROR' });
-    safeSetData({ scenario: 'VALID', data: parseResponse.data });
+    dataScenario.value = { scenario: 'VALID', data: payload };
   };
 
-  const safeAddData = (payload: z.infer<typeof messageSchema>) => {
+  const setUnknownData = (payload: unknown) => {
+    const parseResponse = messagesSchema.safeParse(payload);
+
+    if (!parseResponse.success)
+      return setSafeDataScenario({ scenario: 'ERROR' });
+    setSafeDataScenario({ scenario: 'VALID', data: parseResponse.data });
+  };
+
+  const addSafeData = (payload: z.infer<typeof messageSchema>) => {
     if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
 
@@ -31,21 +39,23 @@ export const useMessagesStore = defineStore('messagesStore', () => {
     };
   };
 
-  const handleAddData = (payload: unknown) => {
+  const addUnknownData = (payload: unknown) => {
     if (dataScenario.value.scenario !== 'VALID')
       return console.error('only add message data when scenario "VALID"');
 
     const parseResponse = messageSchema.safeParse(payload);
 
-    if (!parseResponse.success) return safeSetData({ scenario: 'ERROR' });
-    safeAddData(parseResponse.data);
+    if (!parseResponse.success)
+      return setSafeDataScenario({ scenario: 'ERROR' });
+    addSafeData(parseResponse.data);
   };
 
   return {
     dataScenario,
-    handleSetData,
-    safeSetData,
-    safeAddData,
-    handleAddData,
+    setSafeDataScenario,
+    setSafeData,
+    setUnknownData,
+    addSafeData,
+    addUnknownData,
   };
 });
