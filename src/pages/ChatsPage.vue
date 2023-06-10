@@ -27,7 +27,7 @@ import { useUsersStore } from 'src/stores/useUsersStore.js';
 defineEmits(['submit']);
 const db = createPocketBaseDb();
 const messagesWithUsersStore = useMessagesWithUsersStore();
-const users2Store = useUsersStore();
+const usersStore = useUsersStore();
 const currentUserStore = useCurrentUserStore();
 const route = useRoute();
 
@@ -37,7 +37,7 @@ const onSubmit = async (e: string) => {
     return console.error("can't send messages if not logged in");
 
   const recipientUsername = route.params.username as string;
-  const recipient = users2Store.findUserByUsername(recipientUsername);
+  const recipient = usersStore.findUserByUsername(recipientUsername);
   const recipientId = recipient?.id;
   const senderId = currentUserStore.dataScenario.data.id;
 

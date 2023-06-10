@@ -8,7 +8,7 @@ type TDataScenario =
   | { scenario: 'ERROR' }
   | { scenario: 'VALID'; data: z.infer<typeof usersSchema> };
 
-export const useUsersStore = defineStore('users2', () => {
+export const useUsersStore = defineStore('users', () => {
   const dataScenario = ref<TDataScenario>({ scenario: 'LOADING' });
   const setSafeDataScenario = (payload: TDataScenario) =>
     (dataScenario.value = payload);
