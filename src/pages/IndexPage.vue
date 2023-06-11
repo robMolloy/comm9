@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { ChatSidebarSkeletonList } from 'src/modules';
-import { useUsersStore } from 'src/stores/useUsersStore.js';
+import { useUsersStore } from 'src/stores/useUsersStore';
 
 const usersStore = useUsersStore();
 </script>

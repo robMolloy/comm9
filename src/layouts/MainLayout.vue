@@ -15,9 +15,9 @@
         <q-space />
         <NavigationTabs
           :tabs="[
-            { label: 'Home', baseUrl: '/' },
-            { label: 'Chats', baseUrl: '/chats' },
-            { label: 'profiles', baseUrl: '/profiles' },
+            { label: 'Home', baseUrl: `/` },
+            { label: 'Chats', baseUrl: `/chats/${currentContactId}` },
+            { label: 'profiles', baseUrl: `/profiles` },
           ]"
         />
 
@@ -64,10 +64,13 @@
           v-if="currentUserStore.dataScenario.scenario === 'LOGGED_OUT'"
         >
           <UserLoginSignupCard
-            @on-login-success="onLoginSucccess"
-            @on-signup-success="onSignupSucccess"
+            @on-login-success="onValidLoginFormSubmission"
+            @on-signup-success="onValidSignupFormSubmission"
           />
         </template>
+        <pre>
+          {{ JSON.stringify(currentContactStore.dataScenario, undefined, 2) }}
+        </pre>
 
         <template v-if="currentUserStore.dataScenario.scenario === 'LOGGED_IN'">
           <router-view />
@@ -87,16 +90,19 @@ import {
 import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 import { useRoute } from 'vue-router';
-import { useCurrentUserStore } from 'src/stores/useCurrentUserStore.js';
+import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
+import { useCurrentContactStore } from 'src/stores/useCurrentContactStore';
 import { useQuasar } from 'quasar';
 import { positiveNotification, warningNotification } from 'src/notifications';
 import {
   loginWithPocketBase,
   signupAndLoginWithPocketBase,
 } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
-import { useChatSideBarListUiPropsStore } from 'src/stores/helperStores/useChatSideBarListUiPropsStore.js';
+import { useChatSideBarListUiPropsStore } from 'src/stores/helperStores/useChatSideBarListUiPropsStore';
 
 const currentUserStore = useCurrentUserStore();
+const currentContactStore = useCurrentContactStore();
+
 const chatSideBarListUiPropsStore = useChatSideBarListUiPropsStore();
 const route = useRoute();
 const currentUsername = ref<string | undefined>(undefined);
@@ -111,17 +117,23 @@ watch(
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
 
+const currentContactId =
+  currentContactStore.dataScenario.scenario === 'VALID'
+    ? currentContactStore.dataScenario.data.id
+    : '';
+
 const $q = useQuasar();
 
 type TLoginFormValues = { username: string; password: string };
-const onLoginSucccess = async (formValues: TLoginFormValues) => {
+const onValidLoginFormSubmission = async (formValues: TLoginFormValues) => {
   $q.loading.show();
   const response = await loginWithPocketBase(formValues);
   if (!response.success) positiveNotification(`${response.error.message}`);
   if (!response.success) warningNotification(`${response.error.message}`);
   $q.loading.hide();
 };
-const onSignupSucccess = async (formValues: {
+
+const onValidSignupFormSubmission = async (formValues: {
   name: string;
   username: string;
   password: string;

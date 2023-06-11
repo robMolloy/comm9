@@ -7,7 +7,10 @@
   >
     <template v-slot:label>
       <q-avatar color="white">
-        <img :src="currentUserStore.dataScenario.data.avatarUrl" />
+        <img
+          :src="currentUserStore.dataScenario.data.avatarUrl"
+          alt="user-avatar"
+        />
       </q-avatar>
     </template>
     <q-list>
@@ -30,7 +33,7 @@
 
 <script setup lang="ts">
 import { logoutWithPocketBase } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
-import { useCurrentUserStore } from 'src/stores/useCurrentUserStore.js';
+import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
 
 const currentUserStore = useCurrentUserStore();
 </script>
