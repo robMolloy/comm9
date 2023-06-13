@@ -15,9 +15,13 @@
         <q-space />
         <NavigationTabs
           :tabs="[
-            { label: 'Home', baseUrl: `/` },
-            { label: 'Chats', baseUrl: `/chats/${currentContactId}` },
-            { label: 'profiles', baseUrl: `/profiles` },
+            { label: 'Home', tabUrlMatcher: '', url: `/` },
+            {
+              label: 'Chats',
+              tabUrlMatcher: 'chats',
+              url: `/chats/${currentContactId}`,
+            },
+            { label: 'Profiles', tabUrlMatcher: 'profiles', url: `/profiles` },
           ]"
         />
 
@@ -91,7 +95,7 @@ import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
-import { useCurrentContactStore } from 'src/stores/useCurrentContactStore';
+import { useCurrentChatContactStore } from 'src/stores/useCurrentContactStore';
 import { useQuasar } from 'quasar';
 import { positiveNotification, warningNotification } from 'src/notifications';
 import {
@@ -101,7 +105,7 @@ import {
 import { useChatSideBarListUiPropsStore } from 'src/stores/helperStores/useChatSideBarListUiPropsStore';
 
 const currentUserStore = useCurrentUserStore();
-const currentContactStore = useCurrentContactStore();
+const currentContactStore = useCurrentChatContactStore();
 
 const chatSideBarListUiPropsStore = useChatSideBarListUiPropsStore();
 const route = useRoute();

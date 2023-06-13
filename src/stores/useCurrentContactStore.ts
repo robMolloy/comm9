@@ -1,28 +1,45 @@
-import { useCurrentUserStore } from './useCurrentUserStore';
 import { defineStore } from 'pinia';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { userSchema } from 'src/modules';
+import { computed, ref } from 'vue';
+import { z } from 'zod';
 import { useUsersStore } from './useUsersStore';
 
-export const useCurrentContactStore = defineStore('currentContactStore', () => {
-  const route = useRoute();
-  const currentUserStore = useCurrentUserStore();
-  const usersStore = useUsersStore();
+type TDataScenario =
+  | { scenario: 'NO_CONTACT_FOUND' }
+  | { scenario: 'VALID'; data: z.infer<typeof userSchema> };
+type TInitDataScenario =
+  | { scenario: 'NO_CONTACT_FOUND' }
+  | { scenario: 'VALID'; data: z.infer<typeof userSchema> };
 
-  const dataScenario = computed(() => {
-    if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN')
-      return currentUserStore.dataScenario;
-    if (usersStore.dataScenario.scenario !== 'VALID')
-      return usersStore.dataScenario;
+export const useCurrentChatContactStore = defineStore(
+  'currentChatContactStore',
+  () => {
+    const usersStore = useUsersStore();
+    const dataScenario = computed<TDataScenario>(() => {
+      if (usersStore.dataScenario.scenario !== 'VALID')
+        return { scenario: 'NO_CONTACT_FOUND' };
+    });
 
-    const currentContactUsername = route.params.username as string;
-    const currentContact = usersStore.findUserByUsername(
-      currentContactUsername
-    );
+    const data = ref<z.infer<typeof userSchema> | undefined>();
+    const initDataScenario = computed<TInitDataScenario>(() => {
+      if (data.value === undefined) return { scenario: 'NO_CONTACT_FOUND' };
+      return { scenario: 'VALID', data: data.value };
+    });
+    const setByUserName = (payload: string) => {
+      if (usersStore.dataScenario.scenario !== 'VALID')
+        console.error('usersStore must be VALID to setCurrentChatContact');
 
-    if (!currentContact) return { scenario: 'NO_USER_FOUND' } as const;
-    return { scenario: 'VALID', data: currentContact } as const;
-  });
+      data.value = usersStore.findUserByUsername(payload);
+    };
 
-  return { dataScenario } as const;
-});
+    const setUnknownData = (payload: unknown) => {
+      const parseResponse = userSchema.safeParse(payload);
+
+      if (!parseResponse.success)
+        return setSafeDataScenario({ scenario: 'LOGGED_OUT' });
+      setSafeDataScenario({ scenario: 'LOGGED_IN', data: parseResponse.data });
+    };
+
+    return { dataScenario, setUnknownData, setByUserName };
+  }
+);
