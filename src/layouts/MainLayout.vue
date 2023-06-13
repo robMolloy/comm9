@@ -53,7 +53,12 @@
           >
             <ChatSidebarList
               :values="chatSideBarListUiPropsStore.dataScenario.data"
-              @click="(e) => $router.push(`/chats/${e.label}`)"
+              @click="
+                (e) => {
+                  currentChatContactStore.setByUserName(e?.label);
+                  $router.push(`/chats/${e.label}`);
+                }
+              "
               :active-username="currentUsername"
             />
           </template>
@@ -103,6 +108,8 @@ import {
   signupAndLoginWithPocketBase,
 } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
 import { useChatSideBarListUiPropsStore } from 'src/stores/helperStores/useChatSideBarListUiPropsStore';
+
+const currentChatContactStore = useCurrentChatContactStore();
 
 const currentUserStore = useCurrentUserStore();
 const currentContactStore = useCurrentChatContactStore();
