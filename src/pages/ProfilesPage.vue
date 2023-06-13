@@ -14,10 +14,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+// import { useRoute } from 'vue-router';
 
 const tabs = ref('mails');
 
-const route = useRoute();
-console.log(/*LL*/ 9, 'route.params.id', route.params.id);
+// const route = useRoute();
+// console.log(/*LL*/ 9, 'route.params.id', route.params.id);
 </script>

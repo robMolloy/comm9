@@ -8,9 +8,6 @@
       @click="() => $router.push(tab.url)"
     />
   </q-tabs>
-  <pre>
-    {{ JSON.stringify({ props, selectedTabUrlMatcher }, undefined, 2) }}
-  </pre>
 </template>
 
 <script setup lang="ts">

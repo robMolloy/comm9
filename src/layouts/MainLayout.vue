@@ -19,7 +19,7 @@
             {
               label: 'Chats',
               tabUrlMatcher: 'chats',
-              url: `/chats/${currentContactId}`,
+              url: `/chats/${currentChatContactId}`,
             },
             { label: 'Profiles', tabUrlMatcher: 'profiles', url: `/profiles` },
           ]"
@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
   ChatSidebarList,
   ChatSidebarSkeletonList,
@@ -111,6 +111,12 @@ import { useChatSideBarListUiPropsStore } from 'src/stores/helperStores/useChatS
 
 const currentChatContactStore = useCurrentChatContactStore();
 
+const currentChatContactId = computed(() =>
+  currentChatContactStore.dataScenario.scenario === 'VALID'
+    ? currentChatContactStore.dataScenario.data.username
+    : undefined
+);
+
 const currentUserStore = useCurrentUserStore();
 const currentContactStore = useCurrentChatContactStore();
 
@@ -127,11 +133,6 @@ watch(
 
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
-
-const currentContactId =
-  currentContactStore.dataScenario.scenario === 'VALID'
-    ? currentContactStore.dataScenario.data.id
-    : '';
 
 const $q = useQuasar();
 
