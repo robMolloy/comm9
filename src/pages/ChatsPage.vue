@@ -1,7 +1,7 @@
 <template>
   <template v-if="messagesWithUsersStore.dataScenario.scenario === 'VALID'">
     <MessagingScreen
-      v-model="text"
+      v-model="inputValue"
       :messages="messagesWithUsersStore.chatMessageScreenUiProps"
       @submit="(e) => onSubmit(e)"
     />
@@ -36,18 +36,18 @@ const onEachRender = () =>
 onMounted(onEachRender);
 onUpdated(onEachRender);
 
-const text = ref('ttext');
-const onSubmit = async (e: string) => {
+const inputValue = ref('ttext');
+const onSubmit = async (text: string) => {
+  console.log(/*LL*/ 41, { e: text });
   if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN')
     return console.error("can't send messages if not logged in");
 
   const recipientUsername = route.params.username as string;
   const recipient = usersStore.findUserByUsername(recipientUsername);
-  const recipientId = recipient?.id;
-  const senderId = currentUserStore.dataScenario.data.id;
+  const sender = currentUserStore.dataScenario.data;
 
-  const payload = { senderId, recipientId, text: e };
+  const payload = { senderId: sender.id, recipientId: recipient?.id, text };
   await db.collection('messages').create(payload);
-  text.value = '';
+  inputValue.value = '';
 };
 </script>
