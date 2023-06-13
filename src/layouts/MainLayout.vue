@@ -15,9 +15,13 @@
         <q-space />
         <NavigationTabs
           :tabs="[
-            { label: 'Home', baseUrl: `/` },
-            { label: 'Chats', baseUrl: `/chats/${currentContactId}` },
-            { label: 'profiles', baseUrl: `/profiles` },
+            { label: 'Home', tabUrlMatcher: '', url: `/` },
+            {
+              label: 'Chats',
+              tabUrlMatcher: 'chats',
+              url: `/chats/${currentChatContactId}`,
+            },
+            { label: 'Profiles', tabUrlMatcher: 'profiles', url: `/profiles` },
           ]"
         />
 
@@ -49,7 +53,12 @@
           >
             <ChatSidebarList
               :values="chatSideBarListUiPropsStore.dataScenario.data"
-              @click="(e) => $router.push(`/chats/${e.label}`)"
+              @click="
+                (e) => {
+                  currentChatContactStore.setByUserName(e?.label);
+                  $router.push(`/chats/${e.label}`);
+                }
+              "
               :active-username="currentUsername"
             />
           </template>
@@ -81,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
   ChatSidebarList,
   ChatSidebarSkeletonList,
@@ -91,7 +100,7 @@ import NavigationTabs from 'src/components/NavigationTabs.vue';
 import HeaderLogoutDropdown from 'src/components/HeaderLogoutDropdown.vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
-import { useCurrentContactStore } from 'src/stores/useCurrentContactStore';
+import { useCurrentChatContactStore } from 'src/stores/useCurrentContactStore';
 import { useQuasar } from 'quasar';
 import { positiveNotification, warningNotification } from 'src/notifications';
 import {
@@ -100,8 +109,16 @@ import {
 } from 'src/modules/useVuePocketbaseAuth/helpers/pocketBaseUserActions';
 import { useChatSideBarListUiPropsStore } from 'src/stores/helperStores/useChatSideBarListUiPropsStore';
 
+const currentChatContactStore = useCurrentChatContactStore();
+
+const currentChatContactId = computed(() =>
+  currentChatContactStore.dataScenario.scenario === 'VALID'
+    ? currentChatContactStore.dataScenario.data.username
+    : undefined
+);
+
 const currentUserStore = useCurrentUserStore();
-const currentContactStore = useCurrentContactStore();
+const currentContactStore = useCurrentChatContactStore();
 
 const chatSideBarListUiPropsStore = useChatSideBarListUiPropsStore();
 const route = useRoute();
@@ -116,11 +133,6 @@ watch(
 
 const miniState = ref(true);
 const toggleMiniState = () => (miniState.value = !miniState.value);
-
-const currentContactId =
-  currentContactStore.dataScenario.scenario === 'VALID'
-    ? currentContactStore.dataScenario.data.id
-    : '';
 
 const $q = useQuasar();
 

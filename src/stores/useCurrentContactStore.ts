@@ -1,28 +1,46 @@
-import { useCurrentUserStore } from './useCurrentUserStore';
 import { defineStore } from 'pinia';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { userSchema } from 'src/modules';
+import { computed, ref } from 'vue';
+import { z } from 'zod';
 import { useUsersStore } from './useUsersStore';
 
-export const useCurrentContactStore = defineStore('currentContactStore', () => {
-  const route = useRoute();
-  const currentUserStore = useCurrentUserStore();
-  const usersStore = useUsersStore();
+export const useCurrentChatContactStore = defineStore(
+  'currentChatContactStore',
+  () => {
+    const usersStore = useUsersStore();
+    const dataScenario = computed(() => {
+      if (usersStore.dataScenario.scenario !== 'VALID')
+        return usersStore.dataScenario;
+      if (data.value === undefined)
+        return { scenario: 'NO_CONTACT_FOUND' } as const;
+      if (data.value === null) return { scenario: 'ERROR' } as const;
+      return { scenario: 'VALID', data: data.value } as const;
+    });
 
-  const dataScenario = computed(() => {
-    if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN')
-      return currentUserStore.dataScenario;
-    if (usersStore.dataScenario.scenario !== 'VALID')
-      return usersStore.dataScenario;
+    const data = ref<z.infer<typeof userSchema> | undefined | null>();
+    const setByUserName = (payload: string | undefined) => {
+      if (usersStore.dataScenario.scenario !== 'VALID') {
+        const msg = 'usersStore must be VALID to setCurrentChatContact';
+        return console.error(msg);
+      }
+      if (payload === undefined) return undefined;
 
-    const currentContactUsername = route.params.username as string;
-    const currentContact = usersStore.findUserByUsername(
-      currentContactUsername
-    );
+      data.value = usersStore.findUserByUsername(payload);
+    };
 
-    if (!currentContact) return { scenario: 'NO_USER_FOUND' } as const;
-    return { scenario: 'VALID', data: currentContact } as const;
-  });
+    const setSafeData = (payload: z.infer<typeof userSchema>) => {
+      if (
+        dataScenario.value.scenario !== 'VALID' &&
+        dataScenario.value.scenario !== 'NO_CONTACT_FOUND'
+      ) {
+        const msg =
+          'usersStore must be VALID or NO_CONTACT_FOUND to setCurrentChatContact';
+        return console.error(msg);
+      }
 
-  return { dataScenario } as const;
-});
+      data.value = payload;
+    };
+
+    return { dataScenario, setByUserName, setSafeData };
+  }
+);

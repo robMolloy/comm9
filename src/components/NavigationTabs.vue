@@ -1,11 +1,11 @@
 <template>
-  <q-tabs :model-value="tabName">
+  <q-tabs :model-value="selectedTabUrlMatcher">
     <q-tab
       v-for="tab in props.tabs"
-      :key="tab.baseUrl"
-      :name="tab.baseUrl"
+      :key="tab.url"
+      :name="tab.tabUrlMatcher"
       :label="tab.label"
-      @click="() => $router.push(tab.baseUrl)"
+      @click="() => $router.push(tab.url)"
     />
   </q-tabs>
 </template>
@@ -15,9 +15,9 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const props = defineProps<{
-  tabs: { baseUrl: string; label: string }[];
+  tabs: { url: string; label: string; tabUrlMatcher: string }[];
 }>();
 
 const route = useRoute();
-const tabName = computed(() => `/${route.fullPath.split('/')[1]}`);
+const selectedTabUrlMatcher = computed(() => `${route.fullPath.split('/')[1]}`);
 </script>

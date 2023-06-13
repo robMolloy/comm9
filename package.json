@@ -10,7 +10,8 @@
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "db:serve": "cd pocketbase && pocketbase serve",
+    "db:serve:win": "cd pocketbase && pocketbase serve",
+    "db:serve:mac": "./pocketbase/pocketbase_mac serve",
     "build": "quasar build"
   },
   "dependencies": {
