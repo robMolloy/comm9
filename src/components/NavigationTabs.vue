@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-
+// TODO: selected tab should be controlled within parent component
 const props = defineProps<{
   tabs: { url: string; label: string; tabUrlMatcher: string }[];
 }>();

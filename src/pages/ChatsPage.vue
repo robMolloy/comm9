@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import MessagingScreen from 'src/components/MessagingScreen.vue';
 import { createPocketBaseDb } from 'src/modules';
-import { computed, onBeforeUpdate, onMounted, onUpdated, ref } from 'vue';
+import { computed, onMounted, onUpdated, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
 import { useMessagesWithUsersStore } from 'src/stores/helperStores/useMessagesWithUsersStore';
