@@ -26,9 +26,9 @@ export const useChatMessageScreenUiProps = defineStore(
               currentUserStore.dataScenario.scenario === 'LOGGED_IN' &&
               currentUserStore.dataScenario.data.id === x.sender?.id;
             return {
-              name: isSenderCurrentUser ? 'me' : x.sender?.username ?? '',
-              avatar: x.sender?.avatarUrl ?? '',
-              text: [x.text ?? ''],
+              name: isSenderCurrentUser ? 'me' : x.sender?.username,
+              avatar: x.sender?.avatarUrl,
+              text: [x.text],
               sent: !!isSenderCurrentUser,
             };
           }),
