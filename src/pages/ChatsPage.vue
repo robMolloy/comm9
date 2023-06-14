@@ -19,6 +19,12 @@ import { useUsersStore } from 'src/stores/useUsersStore';
 import { useCurrentChatContactStore } from 'src/stores/useCurrentContactStore';
 
 defineEmits(['submit']);
+
+const onEachRender = () =>
+  currentChatContactStore.setByUserName(currentChatContactId.value);
+onMounted(onEachRender);
+onUpdated(onEachRender);
+
 const db = createPocketBaseDb();
 const usersStore = useUsersStore();
 const currentUserStore = useCurrentUserStore();
@@ -31,15 +37,8 @@ const currentChatContactId = computed(
   () => route.fullPath.split('/').slice(-1)[0]
 );
 
-const onEachRender = () =>
-  currentChatContactStore.setByUserName(currentChatContactId.value);
-
-onMounted(onEachRender);
-onUpdated(onEachRender);
-
-const inputValue = ref('ttext');
+const inputValue = ref('');
 const onSubmit = async (text: string) => {
-  console.log(/*LL*/ 41, { e: text });
   if (currentUserStore.dataScenario.scenario !== 'LOGGED_IN')
     return console.error("can't send messages if not logged in");
 
