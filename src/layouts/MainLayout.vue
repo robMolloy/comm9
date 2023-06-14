@@ -77,9 +77,6 @@
             @on-signup-success="onValidSignupFormSubmission"
           />
         </template>
-        <pre>
-          {{ JSON.stringify(currentContactStore.dataScenario, undefined, 2) }}
-        </pre>
 
         <template v-if="currentUserStore.dataScenario.scenario === 'LOGGED_IN'">
           <router-view />

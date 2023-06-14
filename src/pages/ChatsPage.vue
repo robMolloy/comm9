@@ -1,8 +1,15 @@
 <template>
-  <template v-if="messagesWithUsersStore.dataScenario.scenario === 'VALID'">
+  <!-- <template v-if="messagesWithUsersStore.dataScenario.scenario === 'VALID'">
     <MessagingScreen
       v-model="inputValue"
       :messages="messagesWithUsersStore.chatMessageScreenUiProps"
+      @submit="(e) => onSubmit(e)"
+    />
+  </template> -->
+  <template v-if="chatMessageScreenUiProps.dataScenario.scenario === 'VALID'">
+    <MessagingScreen
+      v-model="inputValue"
+      :messages="chatMessageScreenUiProps.dataScenario.data"
       @submit="(e) => onSubmit(e)"
     />
   </template>
@@ -15,6 +22,7 @@ import { computed, onMounted, onUpdated, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
 import { useMessagesWithUsersStore } from 'src/stores/helperStores/useMessagesWithUsersStore';
+import { useChatMessageScreenUiProps } from 'src/stores/helperStores/useChatMessageScreenUiPropsStore';
 import { useUsersStore } from 'src/stores/useUsersStore';
 import { useCurrentChatContactStore } from 'src/stores/useCurrentContactStore';
 
@@ -24,6 +32,8 @@ const messagesWithUsersStore = useMessagesWithUsersStore();
 const usersStore = useUsersStore();
 const currentUserStore = useCurrentUserStore();
 const currentChatContactStore = useCurrentChatContactStore();
+const chatMessageScreenUiProps = useChatMessageScreenUiProps();
+
 const route = useRoute();
 
 const currentChatContactId = computed(
