@@ -21,14 +21,12 @@ import { createPocketBaseDb } from 'src/modules';
 import { computed, onMounted, onUpdated, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCurrentUserStore } from 'src/stores/useCurrentUserStore';
-import { useMessagesWithUsersStore } from 'src/stores/helperStores/useMessagesWithUsersStore';
 import { useChatMessageScreenUiProps } from 'src/stores/helperStores/useChatMessageScreenUiPropsStore';
 import { useUsersStore } from 'src/stores/useUsersStore';
 import { useCurrentChatContactStore } from 'src/stores/useCurrentContactStore';
 
 defineEmits(['submit']);
 const db = createPocketBaseDb();
-const messagesWithUsersStore = useMessagesWithUsersStore();
 const usersStore = useUsersStore();
 const currentUserStore = useCurrentUserStore();
 const currentChatContactStore = useCurrentChatContactStore();
