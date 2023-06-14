@@ -1,11 +1,4 @@
 <template>
-  <!-- <template v-if="messagesWithUsersStore.dataScenario.scenario === 'VALID'">
-    <MessagingScreen
-      v-model="inputValue"
-      :messages="messagesWithUsersStore.chatMessageScreenUiProps"
-      @submit="(e) => onSubmit(e)"
-    />
-  </template> -->
   <template v-if="chatMessageScreenUiProps.dataScenario.scenario === 'VALID'">
     <MessagingScreen
       v-model="inputValue"
